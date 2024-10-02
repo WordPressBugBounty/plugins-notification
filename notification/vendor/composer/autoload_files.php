@@ -6,8 +6,7 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    '2cffec82183ee1cea088009cef9a6fc3' => $vendorDir . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
-    '8bc1a8c3753b446fe086452ebd43c528' => $vendorDir . '/micropackage/templates/src/functions/template.php',
+    '757ec63c8fda45bbc7049dcca53e5b19' => $baseDir . '/compat/src-deprecated/helpers.php',
+    '5242e514147dd4d790b6cdbb2f9b631b' => $baseDir . '/compat/src-deprecated/namespaces.php',
     '0a80b982fba19b21cf6c85bb0fd60e64' => $baseDir . '/compat/src-deprecated/functions.php',
-    'ac705a2153915448bfb8ba7c5e268866' => $baseDir . '/src/api.php',
 );
