@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -231,6 +231,10 @@ class ArrayLoader implements LoaderInterface
 
         if (isset($config['include-path'])) {
             $package->setIncludePaths($config['include-path']);
+        }
+
+        if (isset($config['php-ext'])) {
+            $package->setPhpExt($config['php-ext']);
         }
 
         if (!empty($config['time'])) {

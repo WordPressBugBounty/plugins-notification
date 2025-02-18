@@ -6,7 +6,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 
 namespace BracketSpace\Notification\Dependencies\JsonSchema\Constraints;
@@ -42,7 +42,7 @@ interface ConstraintInterface
      * @param string           $constraint the constraint/rule that is broken, e.g.: 'minLength'
      * @param array            $more       more array elements to add to the error
      */
-    public function addError(JsonPointer $path = null, $message, $constraint='', array $more = null);
+    public function addError(?JsonPointer $path, $message, $constraint='', ?array $more = null);
 
     /**
      * checks if the validator has not raised errors
@@ -63,5 +63,5 @@ interface ConstraintInterface
      *
      * @throws \BracketSpace\Notification\Dependencies\JsonSchema\Exception\ExceptionInterface
      */
-    public function check(&$value, $schema = null, JsonPointer $path = null, $i = null);
+    public function check(&$value, $schema = null, ?JsonPointer $path = null, $i = null);
 }

@@ -2,7 +2,7 @@
 /**
  * @license BSD-3-Clause
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 namespace BracketSpace\Notification\Dependencies\PhpParser\Builder;
@@ -12,15 +12,18 @@ use BracketSpace\Notification\Dependencies\PhpParser\BuilderHelpers;
 use BracketSpace\Notification\Dependencies\PhpParser\Node;
 use BracketSpace\Notification\Dependencies\PhpParser\Node\Stmt;
 
-class Trait_ extends Declaration
-{
-    protected $name;
-    protected $uses = [];
-    protected $properties = [];
-    protected $methods = [];
-
-    /** @var Node\AttributeGroup[] */
-    protected $attributeGroups = [];
+class Trait_ extends Declaration {
+    protected string $name;
+    /** @var list<Stmt\TraitUse> */
+    protected array $uses = [];
+    /** @var list<Stmt\ClassConst> */
+    protected array $constants = [];
+    /** @var list<Stmt\Property> */
+    protected array $properties = [];
+    /** @var list<Stmt\ClassMethod> */
+    protected array $methods = [];
+    /** @var list<Node\AttributeGroup> */
+    protected array $attributeGroups = [];
 
     /**
      * Creates an interface builder.
@@ -47,6 +50,8 @@ class Trait_ extends Declaration
             $this->methods[] = $stmt;
         } elseif ($stmt instanceof Stmt\TraitUse) {
             $this->uses[] = $stmt;
+        } elseif ($stmt instanceof Stmt\ClassConst) {
+            $this->constants[] = $stmt;
         } else {
             throw new \LogicException(sprintf('Unexpected node of type "%s"', $stmt->getType()));
         }
@@ -72,10 +77,10 @@ class Trait_ extends Declaration
      *
      * @return Stmt\Trait_ The built interface node
      */
-    public function getNode() : BracketSpace\Notification\Dependencies\PhpParser\Node {
+    public function getNode(): BracketSpace\Notification\Dependencies\PhpParser\Node {
         return new Stmt\Trait_(
             $this->name, [
-                'stmts' => array_merge($this->uses, $this->properties, $this->methods),
+                'stmts' => array_merge($this->uses, $this->constants, $this->properties, $this->methods),
                 'attrGroups' => $this->attributeGroups,
             ], $this->attributes
         );

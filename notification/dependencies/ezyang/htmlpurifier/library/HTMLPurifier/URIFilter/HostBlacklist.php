@@ -10,7 +10,7 @@ class BracketSpace_Notification_Dependencies_HTMLPurifier_URIFilter_HostBlacklis
      * @type string
      *
      * @license LGPL-2.1-or-later
-     * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+     * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
      */
     public $name = 'HostBlacklist';
 

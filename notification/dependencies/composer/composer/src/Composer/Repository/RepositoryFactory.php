@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -183,7 +183,7 @@ class RepositoryFactory
     /**
      * @param int|string $index
      * @param array{url?: string} $repo
-     * @param array<string, mixed> $existingRepos
+     * @param array<int|string, mixed> $existingRepos
      */
     public static function generateRepositoryName($index, array $repo, array $existingRepos): string
     {

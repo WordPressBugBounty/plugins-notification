@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 
 namespace BracketSpace\Notification\Dependencies\React\Promise;
@@ -26,7 +26,7 @@ final class Deferred
     /**
      * @param (callable(callable(T):void,callable(\Throwable):void):void)|null $canceller
      */
-    public function __construct(callable $canceller = null)
+    public function __construct(?callable $canceller = null)
     {
         $this->promise = new Promise(function ($resolve, $reject): void {
             $this->resolveCallback = $resolve;

@@ -2,32 +2,26 @@
 /**
  * @license BSD-3-Clause
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 namespace BracketSpace\Notification\Dependencies\PhpParser\Builder;
 
 use BracketSpace\Notification\Dependencies\PhpParser;
 use BracketSpace\Notification\Dependencies\PhpParser\BuilderHelpers;
+use BracketSpace\Notification\Dependencies\PhpParser\Modifiers;
 use BracketSpace\Notification\Dependencies\PhpParser\Node;
 
-class Param implements BracketSpace\Notification\Dependencies\PhpParser\Builder
-{
-    protected $name;
-
-    protected $default = null;
-
-    /** @var Node\Identifier|Node\Name|Node\NullableType|null */
-    protected $type = null;
-
-    protected $byRef = false;
-
-    protected $variadic = false;
-
-    protected $flags = 0;
-
-    /** @var Node\AttributeGroup[] */
-    protected $attributeGroups = [];
+class Param implements BracketSpace\Notification\Dependencies\PhpParser\Builder {
+    protected string $name;
+    protected ?Node\Expr $default = null;
+    /** @var Node\Identifier|Node\Name|Node\ComplexType|null */
+    protected ?Node $type = null;
+    protected bool $byRef = false;
+    protected int $flags = 0;
+    protected bool $variadic = false;
+    /** @var list<Node\AttributeGroup> */
+    protected array $attributeGroups = [];
 
     /**
      * Creates a parameter builder.
@@ -68,19 +62,6 @@ class Param implements BracketSpace\Notification\Dependencies\PhpParser\Builder
     }
 
     /**
-     * Sets type for the parameter.
-     *
-     * @param string|Node\Name|Node\Identifier|Node\ComplexType $type Parameter type
-     *
-     * @return $this The builder instance (for fluid interface)
-     *
-     * @deprecated Use setType() instead
-     */
-    public function setTypeHint($type) {
-        return $this->setType($type);
-    }
-
-    /**
      * Make the parameter accept the value by reference.
      *
      * @return $this The builder instance (for fluid interface)
@@ -108,7 +89,7 @@ class Param implements BracketSpace\Notification\Dependencies\PhpParser\Builder
      * @return $this The builder instance (for fluid interface)
      */
     public function makePublic() {
-        $this->flags = BuilderHelpers::addModifier($this->flags, Node\Stmt\Class_::MODIFIER_PUBLIC);
+        $this->flags = BuilderHelpers::addModifier($this->flags, Modifiers::PUBLIC);
 
         return $this;
     }
@@ -119,7 +100,7 @@ class Param implements BracketSpace\Notification\Dependencies\PhpParser\Builder
      * @return $this The builder instance (for fluid interface)
      */
     public function makeProtected() {
-        $this->flags = BuilderHelpers::addModifier($this->flags, Node\Stmt\Class_::MODIFIER_PROTECTED);
+        $this->flags = BuilderHelpers::addModifier($this->flags, Modifiers::PROTECTED);
 
         return $this;
     }
@@ -130,7 +111,7 @@ class Param implements BracketSpace\Notification\Dependencies\PhpParser\Builder
      * @return $this The builder instance (for fluid interface)
      */
     public function makePrivate() {
-        $this->flags = BuilderHelpers::addModifier($this->flags, Node\Stmt\Class_::MODIFIER_PRIVATE);
+        $this->flags = BuilderHelpers::addModifier($this->flags, Modifiers::PRIVATE);
 
         return $this;
     }
@@ -141,7 +122,29 @@ class Param implements BracketSpace\Notification\Dependencies\PhpParser\Builder
      * @return $this The builder instance (for fluid interface)
      */
     public function makeReadonly() {
-        $this->flags = BuilderHelpers::addModifier($this->flags, Node\Stmt\Class_::MODIFIER_READONLY);
+        $this->flags = BuilderHelpers::addModifier($this->flags, Modifiers::READONLY);
+
+        return $this;
+    }
+
+    /**
+     * Gives the promoted property private(set) visibility.
+     *
+     * @return $this The builder instance (for fluid interface)
+     */
+    public function makePrivateSet() {
+        $this->flags = BuilderHelpers::addModifier($this->flags, Modifiers::PRIVATE_SET);
+
+        return $this;
+    }
+
+    /**
+     * Gives the promoted property protected(set) visibility.
+     *
+     * @return $this The builder instance (for fluid interface)
+     */
+    public function makeProtectedSet() {
+        $this->flags = BuilderHelpers::addModifier($this->flags, Modifiers::PROTECTED_SET);
 
         return $this;
     }
@@ -164,7 +167,7 @@ class Param implements BracketSpace\Notification\Dependencies\PhpParser\Builder
      *
      * @return Node\Param The built parameter node
      */
-    public function getNode() : Node {
+    public function getNode(): Node {
         return new Node\Param(
             new Node\Expr\Variable($this->name),
             $this->default, $this->type, $this->byRef, $this->variadic, [], $this->flags, $this->attributeGroups

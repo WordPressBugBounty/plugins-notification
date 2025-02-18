@@ -2,7 +2,7 @@
 /**
  * @license BSD-3-Clause
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 namespace BracketSpace\Notification\Dependencies\PhpParser\Builder;
@@ -12,13 +12,13 @@ use BracketSpace\Notification\Dependencies\PhpParser\BuilderHelpers;
 use BracketSpace\Notification\Dependencies\PhpParser\Node;
 use BracketSpace\Notification\Dependencies\PhpParser\Node\Stmt;
 
-class Function_ extends FunctionLike
-{
-    protected $name;
-    protected $stmts = [];
+class Function_ extends FunctionLike {
+    protected string $name;
+    /** @var list<Stmt> */
+    protected array $stmts = [];
 
-    /** @var Node\AttributeGroup[] */
-    protected $attributeGroups = [];
+    /** @var list<Node\AttributeGroup> */
+    protected array $attributeGroups = [];
 
     /**
      * Creates a function builder.
@@ -60,7 +60,7 @@ class Function_ extends FunctionLike
      *
      * @return Stmt\Function_ The built function node
      */
-    public function getNode() : Node {
+    public function getNode(): Node {
         return new Stmt\Function_($this->name, [
             'byRef'      => $this->returnByRef,
             'params'     => $this->params,

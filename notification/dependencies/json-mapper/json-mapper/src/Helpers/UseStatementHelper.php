@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 
 declare(strict_types=1);
@@ -54,7 +54,9 @@ class UseStatementHelper
             throw new \RuntimeException("Unable to read {$filename}");
         }
 
-        $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
+        $parser = method_exists(ParserFactory::class, 'createForNewestSupportedVersion')
+          ? (new ParserFactory())->createForNewestSupportedVersion()
+          : (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
 
         try {
             $ast = $parser->parse($contents);

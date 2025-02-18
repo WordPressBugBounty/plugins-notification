@@ -6,7 +6,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 
 namespace BracketSpace\Notification\Dependencies\JsonSchema\Constraints;
@@ -40,12 +40,12 @@ class BaseConstraint
     /**
      * @param Factory $factory
      */
-    public function __construct(Factory $factory = null)
+    public function __construct(?Factory $factory = null)
     {
         $this->factory = $factory ?: new Factory();
     }
 
-    public function addError(JsonPointer $path = null, $message, $constraint = '', array $more = null)
+    public function addError(?JsonPointer $path, $message, $constraint = '', ?array $more = null)
     {
         $error = array(
             'property' => $this->convertJsonPointerIntoPropertyPath($path ?: new JsonPointer('')),

@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -33,7 +33,7 @@ class Decisions implements \Iterator, \Countable
     /** @var array<int, int> */
     protected $decisionMap;
     /**
-     * @var array<array{0: int, 1: Rule}>
+     * @var array<int, array{0: int, 1: Rule}>
      */
     protected $decisionQueue = [];
 
@@ -74,12 +74,12 @@ class Decisions implements \Iterator, \Countable
 
     public function decided(int $literalOrPackageId): bool
     {
-        return !empty($this->decisionMap[abs($literalOrPackageId)]);
+        return ($this->decisionMap[abs($literalOrPackageId)] ?? 0) !== 0;
     }
 
     public function undecided(int $literalOrPackageId): bool
     {
-        return empty($this->decisionMap[abs($literalOrPackageId)]);
+        return ($this->decisionMap[abs($literalOrPackageId)] ?? 0) === 0;
     }
 
     public function decidedInstall(int $literalOrPackageId): bool
@@ -99,7 +99,7 @@ class Decisions implements \Iterator, \Countable
         return 0;
     }
 
-    public function decisionRule(int $literalOrPackageId): ?Rule
+    public function decisionRule(int $literalOrPackageId): Rule
     {
         $packageId = abs($literalOrPackageId);
 
@@ -109,7 +109,7 @@ class Decisions implements \Iterator, \Countable
             }
         }
 
-        return null;
+        throw new \LogicException('Did not find a decision rule using '.$literalOrPackageId);
     }
 
     /**
@@ -224,7 +224,7 @@ class Decisions implements \Iterator, \Countable
         ksort($decisionMap);
         $str = '[';
         foreach ($decisionMap as $packageId => $level) {
-            $str .= (($pool) ? $pool->literalToPackage($packageId) : $packageId).':'.$level.',';
+            $str .= ($pool !== null ? $pool->literalToPackage($packageId) : $packageId).':'.$level.',';
         }
         $str .= ']';
 

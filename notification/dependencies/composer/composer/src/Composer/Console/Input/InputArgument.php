@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -31,7 +31,7 @@ use BracketSpace\Notification\Dependencies\Symfony\Component\Console\Input\Input
  *
  * @internal
  *
- * TODO drop when PHP 8.1 / symfony 6.1+ can be required
+ * TODO symfony/console:6.1 drop when PHP 8.1 / symfony 6.1+ can be required
  */
 class InputArgument extends BaseInputArgument
 {
@@ -64,7 +64,7 @@ class InputArgument extends BaseInputArgument
     public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
     {
         $values = $this->suggestedValues;
-        if ($values instanceof \Closure && !\is_array($values = $values($input, $suggestions))) { // @phpstan-ignore-line
+        if ($values instanceof \Closure && !\is_array($values = $values($input, $suggestions))) { // @phpstan-ignore function.impossibleType
             throw new LogicException(sprintf('Closure for option "%s" must return an array. Got "%s".', $this->getName(), get_debug_type($values)));
         }
         if ([] !== $values) {

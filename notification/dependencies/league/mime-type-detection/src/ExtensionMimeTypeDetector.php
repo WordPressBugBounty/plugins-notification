@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 
 declare(strict_types=1);
@@ -18,7 +18,7 @@ class ExtensionMimeTypeDetector implements MimeTypeDetector, ExtensionLookup
      */
     private $extensions;
 
-    public function __construct(ExtensionToMimeTypeMap $extensions = null)
+    public function __construct(?ExtensionToMimeTypeMap $extensions = null)
     {
         $this->extensions = $extensions ?: new GeneratedExtensionToMimeTypeMap();
     }

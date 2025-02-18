@@ -24,7 +24,7 @@
  *          the HTML or Attr namespace!
  *
  * @license LGPL-2.1-or-later
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 class BracketSpace_Notification_Dependencies_HTMLPurifier_HTMLDefinition extends BracketSpace_Notification_Dependencies_HTMLPurifier_Definition
 {
@@ -418,7 +418,7 @@ class BracketSpace_Notification_Dependencies_HTMLPurifier_HTMLDefinition extends
                     // $tag.$attr are not user supplied, so no worries!
                     trigger_error(
                         "Error with $tag.$attr: tag.attr syntax not supported for " .
-                        "HTML.ForbiddenAttributes; use tag@attr BracketSpace_Notification_Dependencies_instead",
+                        "HTML.ForbiddenAttributes; use tag@attr instead",
                         E_USER_WARNING
                     );
                 }
@@ -433,7 +433,7 @@ class BracketSpace_Notification_Dependencies_HTMLPurifier_HTMLDefinition extends
             }
             if ($key[1] == '.') {
                 trigger_error(
-                    "Error with $key: *.attr syntax not supported for HTML.ForbiddenAttributes; use attr BracketSpace_Notification_Dependencies_instead",
+                    "Error with $key: *.attr syntax not supported for HTML.ForbiddenAttributes; use attr instead",
                     E_USER_WARNING
                 );
             }

@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -37,6 +37,7 @@ class JsonFile
     public const LAX_SCHEMA = 1;
     public const STRICT_SCHEMA = 2;
     public const AUTH_SCHEMA = 3;
+    public const LOCK_SCHEMA = 4;
 
     /** @deprecated Use \JSON_UNESCAPED_SLASHES */
     public const JSON_UNESCAPED_SLASHES = 64;
@@ -46,6 +47,7 @@ class JsonFile
     public const JSON_UNESCAPED_UNICODE = 256;
 
     public const COMPOSER_SCHEMA_PATH = __DIR__ . '/../../../res/composer-schema.json';
+    public const LOCK_SCHEMA_PATH = __DIR__ . '/../../../res/composer-lock-schema.json';
 
     public const INDENT_DEFAULT = '    ';
 
@@ -233,8 +235,12 @@ class JsonFile
     {
         $isComposerSchemaFile = false;
         if (null === $schemaFile) {
-            $isComposerSchemaFile = true;
-            $schemaFile = self::COMPOSER_SCHEMA_PATH;
+            if ($schema === self::LOCK_SCHEMA) {
+                $schemaFile = self::LOCK_SCHEMA_PATH;
+            } else {
+                $isComposerSchemaFile = true;
+                $schemaFile = self::COMPOSER_SCHEMA_PATH;
+            }
         }
 
         // Prepend with file:// only when not using a special schema already (e.g. in the phar)
@@ -289,7 +295,7 @@ class JsonFile
             return Preg::replaceCallback(
                 '#^ {4,}#m',
                 static function ($match) use ($indent): string {
-                    return str_repeat($indent, (int)(strlen($match[0] ?? '') / 4));
+                    return str_repeat($indent, (int)(strlen($match[0]) / 4));
                 },
                 $json
             );

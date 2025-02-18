@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -38,9 +38,13 @@ class GlobalCommand extends BaseCommand
     {
         $application = $this->getApplication();
         if ($input->mustSuggestArgumentValuesFor('command-name')) {
-            $suggestions->suggestValues(array_values(array_filter(array_map(static function (Command $command) {
-                return $command->isHidden() ? null : $command->getName();
-            }, $application->all()))));
+            $suggestions->suggestValues(array_values(array_filter(
+                array_map(static function (Command $command) {
+                    return $command->isHidden() ? null : $command->getName();
+                }, $application->all()), function (?string $cmd) {
+                    return $cmd !== null;
+                }
+            )));
 
             return;
         }

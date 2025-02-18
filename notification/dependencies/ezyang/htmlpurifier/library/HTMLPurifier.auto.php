@@ -4,7 +4,7 @@
  * This is a stub include that automatically configures the include path.
  *
  * @license LGPL-2.1-or-later
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 
 set_include_path(dirname(__FILE__) . PATH_SEPARATOR . get_include_path() );

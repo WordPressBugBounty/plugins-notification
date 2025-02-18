@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -71,11 +71,19 @@ class Locker
     {
         $this->lockFile = $lockFile;
         $this->installationManager = $installationManager;
-        $this->hash = md5($composerFileContents);
+        $this->hash = hash('md5', $composerFileContents);
         $this->contentHash = self::getContentHash($composerFileContents);
         $this->loader = new ArrayLoader(null, true);
         $this->dumper = new ArrayDumper();
         $this->process = $process ?? new ProcessExecutor($io);
+    }
+
+    /**
+     * @internal
+     */
+    public function getJsonFile(): JsonFile
+    {
+        return $this->lockFile;
     }
 
     /**
@@ -112,7 +120,7 @@ class Locker
 
         ksort($relevantContent);
 
-        return md5(JsonFile::encode($relevantContent, 0));
+        return hash('md5', JsonFile::encode($relevantContent, 0));
     }
 
     /**
@@ -252,6 +260,9 @@ class Locker
         return $requirements;
     }
 
+    /**
+     * @return key-of<BasePackage::STABILITIES>
+     */
     public function getMinimumStability(): string
     {
         $lockData = $this->getLockData();
@@ -370,18 +381,22 @@ class Locker
             'packages-dev' => null,
             'aliases' => $aliases,
             'minimum-stability' => $minimumStability,
-            'stability-flags' => $stabilityFlags,
+            'stability-flags' => \count($stabilityFlags) > 0 ? $stabilityFlags : new \stdClass,
             'prefer-stable' => $preferStable,
             'prefer-lowest' => $preferLowest,
         ];
+
+        if (is_array($lock['stability-flags'])) {
+            ksort($lock['stability-flags']);
+        }
 
         $lock['packages'] = $this->lockPackages($packages);
         if (null !== $devPackages) {
             $lock['packages-dev'] = $this->lockPackages($devPackages);
         }
 
-        $lock['platform'] = $platformReqs;
-        $lock['platform-dev'] = $platformDevReqs;
+        $lock['platform'] = \count($platformReqs) > 0 ? $platformReqs : new \stdClass;
+        $lock['platform-dev'] = \count($platformDevReqs) > 0 ? $platformDevReqs : new \stdClass;
         if (\count($platformOverrides) > 0) {
             $lock['platform-overrides'] = $platformOverrides;
         }

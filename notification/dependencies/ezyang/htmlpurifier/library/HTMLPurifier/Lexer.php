@@ -40,7 +40,7 @@
  * limitation of the token system and some workarounds would be nice.
  *
  * @license LGPL-2.1-or-later
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 class BracketSpace_Notification_Dependencies_HTMLPurifier_Lexer
 {
@@ -80,7 +80,7 @@ class BracketSpace_Notification_Dependencies_HTMLPurifier_Lexer
             $lexer = $config;
             trigger_error(
                 "Passing a prototype to
-                BracketSpace_Notification_Dependencies_HTMLPurifier_Lexer::create() is deprecated, please BracketSpace_Notification_Dependencies_instead
+                BracketSpace_Notification_Dependencies_HTMLPurifier_Lexer::create() is deprecated, please instead
                 use %Core.LexerImpl",
                 E_USER_WARNING
             );
@@ -147,7 +147,7 @@ class BracketSpace_Notification_Dependencies_HTMLPurifier_Lexer
         if ($needs_tracking && !$inst->tracksLineNumbers) {
             throw new BracketSpace_Notification_Dependencies_HTMLPurifier_Exception(
                 'Cannot use lexer that does not support line numbers with ' .
-                'Core.MaintainLineNumbers or Core.CollectErrors (use DirectLex BracketSpace_Notification_Dependencies_instead)'
+                'Core.MaintainLineNumbers or Core.CollectErrors (use DirectLex instead)'
             );
         }
 

@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -19,6 +19,8 @@ namespace BracketSpace\Notification\Dependencies\Composer\IO;
 
 use BracketSpace\Notification\Dependencies\Composer\Pcre\Preg;
 use BracketSpace\Notification\Dependencies\Symfony\Component\Console\Helper\QuestionHelper;
+use BracketSpace\Notification\Dependencies\Symfony\Component\Console\Input\InputInterface;
+use BracketSpace\Notification\Dependencies\Symfony\Component\Console\Output\OutputInterface;
 use BracketSpace\Notification\Dependencies\Symfony\Component\Console\Output\StreamOutput;
 use BracketSpace\Notification\Dependencies\Symfony\Component\Console\Formatter\OutputFormatterInterface;
 use BracketSpace\Notification\Dependencies\Symfony\Component\Console\Input\StreamableInputInterface;
@@ -30,17 +32,16 @@ use BracketSpace\Notification\Dependencies\Symfony\Component\Console\Helper\Help
  */
 class BufferIO extends ConsoleIO
 {
-    /** @var StringInput */
-    protected $input;
-    /** @var StreamOutput */
-    protected $output;
-
     public function __construct(string $input = '', int $verbosity = StreamOutput::VERBOSITY_NORMAL, ?OutputFormatterInterface $formatter = null)
     {
         $input = new StringInput($input);
         $input->setInteractive(false);
 
-        $output = new StreamOutput(fopen('php://memory', 'rw'), $verbosity, $formatter ? $formatter->isDecorated() : false, $formatter);
+        $stream = fopen('php://memory', 'rw');
+        if ($stream === false) {
+            throw new \RuntimeException('Unable to open memory output stream');
+        }
+        $output = new StreamOutput($stream, $verbosity, $formatter !== null ? $formatter->isDecorated() : false, $formatter);
 
         parent::__construct($input, $output, new HelperSet([
             new QuestionHelper(),
@@ -52,13 +53,12 @@ class BufferIO extends ConsoleIO
      */
     public function getOutput(): string
     {
+        assert($this->output instanceof StreamOutput);
         fseek($this->output->getStream(), 0);
 
-        $output = stream_get_contents($this->output->getStream());
+        $output = (string) stream_get_contents($this->output->getStream());
 
         $output = Preg::replaceCallback("{(?<=^|\n|\x08)(.+?)(\x08+)}", static function ($matches): string {
-            assert(is_string($matches[1]));
-            assert(is_string($matches[2]));
             $pre = strip_tags($matches[1]);
 
             if (strlen($pre) === strlen($matches[2])) {
@@ -90,11 +90,14 @@ class BufferIO extends ConsoleIO
     /**
      * @param string[] $inputs
      *
-     * @return false|resource stream
+     * @return resource stream
      */
     private function createStream(array $inputs)
     {
         $stream = fopen('php://memory', 'r+');
+        if ($stream === false) {
+            throw new \RuntimeException('Unable to open memory output stream');
+        }
 
         foreach ($inputs as $input) {
             fwrite($stream, $input.PHP_EOL);

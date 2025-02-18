@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -45,7 +45,7 @@ class StrictConfirmationQuestion extends Question
      */
     public function __construct(string $question, bool $default = true, string $trueAnswerRegex = '/^y(?:es)?$/i', string $falseAnswerRegex = '/^no?$/i')
     {
-        parent::__construct($question, (bool) $default);
+        parent::__construct($question, $default);
 
         $this->trueAnswerRegex = $trueAnswerRegex;
         $this->falseAnswerRegex = $falseAnswerRegex;

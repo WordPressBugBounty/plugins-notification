@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -219,6 +219,14 @@ class JsonManipulator
             return $this->removeSubNode('scripts', substr($name, 8));
         }
 
+        if (strpos($name, 'autoload.') === 0) {
+            return $this->removeSubNode('autoload', substr($name, 9));
+        }
+
+        if (strpos($name, 'autoload-dev.') === 0) {
+            return $this->removeSubNode('autoload-dev', substr($name, 13));
+        }
+
         return $this->removeMainKey($name);
     }
 
@@ -421,6 +429,9 @@ class JsonManipulator
             if ($subName !== null) {
                 $curVal = json_decode($children, true);
                 unset($curVal[$name][$subName]);
+                if ($curVal[$name] === []) {
+                    $curVal[$name] = new \ArrayObject();
+                }
                 $this->addSubNode($mainNode, $name, $curVal[$name]);
             }
 
@@ -432,7 +443,10 @@ class JsonManipulator
             if ($subName !== null) {
                 $curVal = json_decode($matches['content'], true);
                 unset($curVal[$name][$subName]);
-                $childrenClean = $this->format($curVal);
+                if ($curVal[$name] === []) {
+                    $curVal[$name] = new \ArrayObject();
+                }
+                $childrenClean = $this->format($curVal, 0, true);
             }
 
             return $matches['start'] . $childrenClean . $matches['end'];
@@ -539,12 +553,19 @@ class JsonManipulator
     /**
      * @param mixed $data
      */
-    public function format($data, int $depth = 0): string
+    public function format($data, int $depth = 0, bool $wasObject = false): string
     {
-        if (is_array($data)) {
-            reset($data);
+        if ($data instanceof \stdClass || $data instanceof \ArrayObject) {
+            $data = (array) $data;
+            $wasObject = true;
+        }
 
-            if (is_numeric(key($data))) {
+        if (is_array($data)) {
+            if (\count($data) === 0) {
+                return $wasObject ? '{' . $this->newline . str_repeat($this->indent, $depth + 1) . '}' : '[]';
+            }
+
+            if (array_is_list($data)) {
                 foreach ($data as $key => $val) {
                     $data[$key] = $this->format($val, $depth + 1);
                 }
@@ -555,7 +576,7 @@ class JsonManipulator
             $out = '{' . $this->newline;
             $elems = [];
             foreach ($data as $key => $val) {
-                $elems[] = str_repeat($this->indent, $depth + 2) . JsonFile::encode($key). ': '.$this->format($val, $depth + 1);
+                $elems[] = str_repeat($this->indent, $depth + 2) . JsonFile::encode((string) $key). ': '.$this->format($val, $depth + 1);
             }
 
             return $out . implode(','.$this->newline, $elems) . $this->newline . str_repeat($this->indent, $depth + 1) . '}';

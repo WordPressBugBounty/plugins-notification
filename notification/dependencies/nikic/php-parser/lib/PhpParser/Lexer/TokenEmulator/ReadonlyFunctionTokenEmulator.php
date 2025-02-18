@@ -2,12 +2,12 @@
 /**
  * @license BSD-3-Clause
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 namespace BracketSpace\Notification\Dependencies\PhpParser\Lexer\TokenEmulator;
 
-use BracketSpace\Notification\Dependencies\PhpParser\Lexer\Emulative;
+use BracketSpace\Notification\Dependencies\PhpParser\PhpVersion;
 
 /*
  * In PHP 8.1, "readonly(" was special cased in the lexer in order to support functions with
@@ -25,8 +25,8 @@ class ReadonlyFunctionTokenEmulator extends KeywordEmulator {
         return \T_READONLY;
     }
 
-    public function getPhpVersion(): string {
-        return Emulative::PHP_8_2;
+    public function getPhpVersion(): PhpVersion {
+        return PhpVersion::fromComponents(8, 2);
     }
 
     public function reverseEmulate(string $code, array $tokens): array {

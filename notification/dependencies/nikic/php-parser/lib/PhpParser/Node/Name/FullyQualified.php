@@ -2,19 +2,18 @@
 /**
  * @license BSD-3-Clause
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 namespace BracketSpace\Notification\Dependencies\PhpParser\Node\Name;
 
-class FullyQualified extends \BracketSpace\Notification\Dependencies\PhpParser\Node\Name
-{
+class FullyQualified extends \BracketSpace\Notification\Dependencies\PhpParser\Node\Name {
     /**
      * Checks whether the name is unqualified. (E.g. Name)
      *
      * @return bool Whether the name is unqualified
      */
-    public function isUnqualified() : bool {
+    public function isUnqualified(): bool {
         return false;
     }
 
@@ -23,7 +22,7 @@ class FullyQualified extends \BracketSpace\Notification\Dependencies\PhpParser\N
      *
      * @return bool Whether the name is qualified
      */
-    public function isQualified() : bool {
+    public function isQualified(): bool {
         return false;
     }
 
@@ -32,7 +31,7 @@ class FullyQualified extends \BracketSpace\Notification\Dependencies\PhpParser\N
      *
      * @return bool Whether the name is fully qualified
      */
-    public function isFullyQualified() : bool {
+    public function isFullyQualified(): bool {
         return true;
     }
 
@@ -41,15 +40,15 @@ class FullyQualified extends \BracketSpace\Notification\Dependencies\PhpParser\N
      *
      * @return bool Whether the name is relative
      */
-    public function isRelative() : bool {
+    public function isRelative(): bool {
         return false;
     }
 
-    public function toCodeString() : string {
+    public function toCodeString(): string {
         return '\\' . $this->toString();
     }
-    
-    public function getType() : string {
+
+    public function getType(): string {
         return 'Name_FullyQualified';
     }
 }

@@ -632,7 +632,7 @@ class StraussConfig
         // strauss --updateCallSites=true
         // strauss --updateCallSites=src,input,extra
 
-        if ($input->hasOption('updateCallSites')) {
+        if ($input->hasOption('updateCallSites') && $input->getOption('updateCallSites') !== null) {
             $updateCallSitesInput = $input->getOption('updateCallSites');
 
             if ('false' === $updateCallSitesInput) {
@@ -644,10 +644,10 @@ class StraussConfig
             }
         }
 
-        if ($input->hasOption('deleteVendorPackages')) {
+        if ($input->hasOption('deleteVendorPackages') && $input->getOption('deleteVendorPackages') !== null) {
             $isDeleteVendorPackagesCommandLine = $input->getOption('deleteVendorPackages') === 'true';
             $this->setDeleteVendorPackages($isDeleteVendorPackagesCommandLine);
-        } elseif ($input->hasOption('delete_vendor_packages')) {
+        } elseif ($input->hasOption('delete_vendor_packages') && $input->getOption('delete_vendor_packages') !== null) {
             $isDeleteVendorPackagesCommandLine = $input->getOption('delete_vendor_packages') === 'true';
             $this->setDeleteVendorPackages($isDeleteVendorPackagesCommandLine);
         }

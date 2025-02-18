@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -347,7 +347,7 @@ class Perforce
     public function connectClient(): void
     {
         $p4CreateClientCommand = $this->generateP4Command(
-            'client -i < ' . str_replace(" ", "\\ ", $this->getP4ClientSpec())
+            'client -i < ' . ProcessExecutor::escape($this->getP4ClientSpec())
         );
         $this->executeCommand($p4CreateClientCommand);
     }

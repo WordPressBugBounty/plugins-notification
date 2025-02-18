@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -68,8 +68,6 @@ class GitHubDriver extends VcsDriver
             throw new \InvalidArgumentException(sprintf('The GitHub repository URL %s is invalid.', $this->url));
         }
 
-        assert(is_string($match[3]));
-        assert(is_string($match[4]));
         $this->owner = $match[3];
         $this->repository = $match[4];
         $this->originUrl = strtolower($match[1] ?? (string) $match[2]);
@@ -290,6 +288,9 @@ class GitHubDriver extends VcsDriver
                     break;
                 case 'community_bridge':
                     $result[$key]['url'] = 'https://funding.communitybridge.org/projects/' . basename($item['url']);
+                    break;
+                case 'buy_me_a_coffee':
+                    $result[$key]['url'] = 'https://www.buymeacoffee.com/' . basename($item['url']);
                     break;
             }
         }

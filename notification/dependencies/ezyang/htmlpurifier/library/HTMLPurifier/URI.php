@@ -9,7 +9,7 @@
  *      validate() is called.
  *
  * @license LGPL-2.1-or-later
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 class BracketSpace_Notification_Dependencies_HTMLPurifier_URI
 {
@@ -127,7 +127,7 @@ class BracketSpace_Notification_Dependencies_HTMLPurifier_URI
         // validate scheme
         // NOTE: It's not appropriate to check whether or not this
         // scheme is in our registry, since a URIFilter may convert a
-        // URI that we don't allow into one we do.  So BracketSpace_Notification_Dependencies_instead, we just
+        // URI that we don't allow into one we do.  So instead, we just
         // check if the scheme can be dropped because there is no host
         // and it is our default scheme.
         if (!is_null($this->scheme) && is_null($this->host) || $this->host === '') {

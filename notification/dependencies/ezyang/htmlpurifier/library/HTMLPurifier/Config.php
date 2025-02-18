@@ -15,7 +15,7 @@
  * @todo Reconsider some of the public member variables
  *
  * @license LGPL-2.1-or-later
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 class BracketSpace_Notification_Dependencies_HTMLPurifier_Config
 {
@@ -173,7 +173,7 @@ class BracketSpace_Notification_Dependencies_HTMLPurifier_Config
     {
         if ($a !== null) {
             $this->triggerError(
-                "Using deprecated API: use \$config->get('$key.$a') BracketSpace_Notification_Dependencies_instead",
+                "Using deprecated API: use \$config->get('$key.$a') instead",
                 E_USER_WARNING
             );
             $key = "$key.$a";
@@ -303,7 +303,7 @@ class BracketSpace_Notification_Dependencies_HTMLPurifier_Config
             $directive = $value;
             $value = $a;
             $key = "$key.$directive";
-            $this->triggerError("Using deprecated API: use \$config->set('$key', ...) BracketSpace_Notification_Dependencies_instead", E_USER_NOTICE);
+            $this->triggerError("Using deprecated API: use \$config->set('$key', ...) instead", E_USER_NOTICE);
         } else {
             list($namespace) = explode('.', $key);
         }
@@ -409,7 +409,7 @@ class BracketSpace_Notification_Dependencies_HTMLPurifier_Config
      *             definition object is available and no further edits
      *             are necessary.  Consider using
      *             maybeGetRawHTMLDefinition, which is more explicitly
-     *             named, BracketSpace_Notification_Dependencies_instead.
+     *             named, instead.
      *
      * @return BracketSpace_Notification_Dependencies_HTMLPurifier_HTMLDefinition|null
      */
@@ -428,7 +428,7 @@ class BracketSpace_Notification_Dependencies_HTMLPurifier_Config
      *             definition object is available and no further edits
      *             are necessary.  Consider using
      *             maybeGetRawCSSDefinition, which is more explicitly
-     *             named, BracketSpace_Notification_Dependencies_instead.
+     *             named, instead.
      *
      * @return BracketSpace_Notification_Dependencies_HTMLPurifier_CSSDefinition|null
      */
@@ -447,7 +447,7 @@ class BracketSpace_Notification_Dependencies_HTMLPurifier_Config
      *             definition object is available and no further edits
      *             are necessary.  Consider using
      *             maybeGetRawURIDefinition, which is more explicitly
-     *             named, BracketSpace_Notification_Dependencies_instead.
+     *             named, instead.
      *
      * @return BracketSpace_Notification_Dependencies_HTMLPurifier_URIDefinition|null
      */

@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 
 declare(strict_types=1);
@@ -46,7 +46,7 @@ class FinfoMimeTypeDetector implements MimeTypeDetector, ExtensionLookup
 
     public function __construct(
         string $magicFile = '',
-        ExtensionToMimeTypeMap $extensionMap = null,
+        ?ExtensionToMimeTypeMap $extensionMap = null,
         ?int $bufferSampleSize = null,
         array $inconclusiveMimetypes = self::INCONCLUSIVE_MIME_TYPES
     ) {

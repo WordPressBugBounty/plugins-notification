@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -174,7 +174,7 @@ EOT
         }
 
         if ($version !== null && Preg::isMatchStrictGroups('{@(stable|RC|beta|alpha|dev)$}i', $version, $match)) {
-            $minStability = $match[1];
+            $minStability = VersionParser::normalizeStability($match[1]);
             $version = (string) substr($version, 0, -strlen($match[0]));
         }
 

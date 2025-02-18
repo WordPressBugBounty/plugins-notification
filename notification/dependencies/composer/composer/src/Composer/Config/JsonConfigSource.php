@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -167,7 +167,7 @@ class JsonConfigSource implements ConfigSourceInterface
     public function removeProperty(string $name): void
     {
         $this->manipulateJson('removeProperty', static function (&$config, $key): void {
-            if (strpos($key, 'extra.') === 0 || strpos($key, 'scripts.') === 0) {
+            if (strpos($key, 'extra.') === 0 || strpos($key, 'scripts.') === 0 || stripos($key, 'autoload.') === 0 || stripos($key, 'autoload-dev.') === 0) {
                 $bits = explode('.', $key);
                 $last = array_pop($bits);
                 $arr = &$config[reset($bits)];

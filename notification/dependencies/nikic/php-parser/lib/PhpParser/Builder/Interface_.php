@@ -2,7 +2,7 @@
 /**
  * @license BSD-3-Clause
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 namespace BracketSpace\Notification\Dependencies\PhpParser\Builder;
@@ -13,15 +13,16 @@ use BracketSpace\Notification\Dependencies\PhpParser\Node;
 use BracketSpace\Notification\Dependencies\PhpParser\Node\Name;
 use BracketSpace\Notification\Dependencies\PhpParser\Node\Stmt;
 
-class Interface_ extends Declaration
-{
-    protected $name;
-    protected $extends = [];
-    protected $constants = [];
-    protected $methods = [];
-
-    /** @var Node\AttributeGroup[] */
-    protected $attributeGroups = [];
+class Interface_ extends Declaration {
+    protected string $name;
+    /** @var list<Name> */
+    protected array $extends = [];
+    /** @var list<Stmt\ClassConst> */
+    protected array $constants = [];
+    /** @var list<Stmt\ClassMethod> */
+    protected array $methods = [];
+    /** @var list<Node\AttributeGroup> */
+    protected array $attributeGroups = [];
 
     /**
      * Creates an interface builder.
@@ -88,7 +89,7 @@ class Interface_ extends Declaration
      *
      * @return Stmt\Interface_ The built interface node
      */
-    public function getNode() : BracketSpace\Notification\Dependencies\PhpParser\Node {
+    public function getNode(): BracketSpace\Notification\Dependencies\PhpParser\Node {
         return new Stmt\Interface_($this->name, [
             'extends' => $this->extends,
             'stmts' => array_merge($this->constants, $this->methods),

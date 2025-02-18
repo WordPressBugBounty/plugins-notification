@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -38,6 +38,8 @@ class AuditCommand extends BaseCommand
                 new InputOption('no-dev', null, InputOption::VALUE_NONE, 'Disables auditing of require-dev packages.'),
                 new InputOption('format', 'f', InputOption::VALUE_REQUIRED, 'Output format. Must be "table", "plain", "json", or "summary".', Auditor::FORMAT_TABLE, Auditor::FORMATS),
                 new InputOption('locked', null, InputOption::VALUE_NONE, 'Audit based on the lock file instead of the installed packages.'),
+                new InputOption('abandoned', null, InputOption::VALUE_REQUIRED, 'Behavior on abandoned packages. Must be "ignore", "report", or "fail".', null, Auditor::ABANDONEDS),
+                new InputOption('ignore-severity', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'Ignore advisories of a certain severity level.', [], ['low', 'medium', 'high', 'critical']),
             ])
             ->setHelp(
                 <<<EOT
@@ -70,7 +72,26 @@ EOT
 
         $auditConfig = $composer->getConfig()->get('audit');
 
-        return min(255, $auditor->audit($this->getIO(), $repoSet, $packages, $this->getAuditFormat($input, 'format'), false, $auditConfig['ignore'] ?? [], $auditConfig['abandoned'] ?? Auditor::ABANDONED_FAIL));
+        $abandoned = $input->getOption('abandoned');
+        if ($abandoned !== null && !in_array($abandoned, Auditor::ABANDONEDS, true)) {
+            throw new \InvalidArgumentException('--audit must be one of '.implode(', ', Auditor::ABANDONEDS).'.');
+        }
+
+        $abandoned = $abandoned ?? $auditConfig['abandoned'] ?? Auditor::ABANDONED_FAIL;
+
+        $ignoreSeverities = $input->getOption('ignore-severity') ?? [];
+
+        return min(255, $auditor->audit(
+            $this->getIO(),
+            $repoSet,
+            $packages,
+            $this->getAuditFormat($input, 'format'),
+            false,
+            $auditConfig['ignore'] ?? [],
+            $abandoned,
+            $ignoreSeverities
+        ));
+
     }
 
     /**

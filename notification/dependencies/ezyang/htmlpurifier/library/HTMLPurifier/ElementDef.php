@@ -9,7 +9,7 @@
  *          the mergeIn() method.
  *
  * @license LGPL-2.1-or-later
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 class BracketSpace_Notification_Dependencies_HTMLPurifier_ElementDef
 {
@@ -122,7 +122,7 @@ class BracketSpace_Notification_Dependencies_HTMLPurifier_ElementDef
 
     /**
      * If a foreign element is found in this element, test if it is
-     * allowed by this sub-element; if it is, BracketSpace_Notification_Dependencies_instead of closing the
+     * allowed by this sub-element; if it is, instead of closing the
      * current element, place it inside this element.
      * @type string
      */

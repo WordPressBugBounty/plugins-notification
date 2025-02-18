@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -85,6 +85,8 @@ class Installer
     // used/declared in SolverProblemsException, carried over here for completeness
     public const ERROR_DEPENDENCY_RESOLUTION_FAILED = 2;
     public const ERROR_AUDIT_FAILED = 5;
+    // technically exceptions are thrown with various status codes >400, but the process exit code is normalized to 100
+    public const ERROR_TRANSPORT_EXCEPTION = 100;
 
     /**
      * @var IOInterface
@@ -181,6 +183,10 @@ class Installer
     protected $errorOnAudit = false;
     /** @var Auditor::FORMAT_* */
     protected $auditFormat = Auditor::FORMAT_SUMMARY;
+    /** @var list<string> */
+    private $ignoredTypes = ['php-ext', 'php-ext-zend'];
+    /** @var list<string>|null */
+    private $allowedTypes = null;
 
     /** @var bool */
     protected $updateMirrors = false;
@@ -497,7 +503,7 @@ class Installer
             $request->setUpdateAllowList($this->updateAllowList, $this->updateAllowTransitiveDependencies);
         }
 
-        $pool = $repositorySet->createPool($request, $this->io, $this->eventDispatcher, $this->createPoolOptimizer($policy));
+        $pool = $repositorySet->createPool($request, $this->io, $this->eventDispatcher, $this->createPoolOptimizer($policy), $this->ignoredTypes, $this->allowedTypes);
 
         $this->io->writeError('<info>Updating dependencies</info>');
 
@@ -537,10 +543,7 @@ class Installer
             return $exitCode;
         }
 
-        // exists as of composer/semver 3.3.0
-        if (method_exists('BracketSpace\Notification\Dependencies\Composer\Semver\CompilingMatcher', 'clear')) { // @phpstan-ignore-line
-            \BracketSpace\Notification\Dependencies\Composer\Semver\CompilingMatcher::clear();
-        }
+        \BracketSpace\Notification\Dependencies\Composer\Semver\CompilingMatcher::clear();
 
         // write lock
         $platformReqs = $this->extractPlatformRequirements($this->package->getRequires());
@@ -744,18 +747,33 @@ class Installer
             if ($missingRequirementInfo !== []) {
                 $this->io->writeError($missingRequirementInfo);
 
-                return self::ERROR_LOCK_FILE_INVALID;
+                if (!$this->config->get('allow-missing-requirements')) {
+                    return self::ERROR_LOCK_FILE_INVALID;
+                }
             }
 
             foreach ($lockedRepository->getPackages() as $package) {
                 $request->fixLockedPackage($package);
             }
 
-            foreach ($this->locker->getPlatformRequirements($this->devMode) as $link) {
-                $request->requireName($link->getTarget(), $link->getConstraint());
+            $rootRequires = $this->package->getRequires();
+            if ($this->devMode) {
+                $rootRequires = array_merge($rootRequires, $this->package->getDevRequires());
+            }
+            foreach ($rootRequires as $link) {
+                if (PlatformRepository::isPlatformPackage($link->getTarget())) {
+                    $request->requireName($link->getTarget(), $link->getConstraint());
+                }
             }
 
-            $pool = $repositorySet->createPool($request, $this->io, $this->eventDispatcher);
+            foreach ($this->locker->getPlatformRequirements($this->devMode) as $link) {
+                if (!isset($rootRequires[$link->getTarget()])) {
+                    $request->requireName($link->getTarget(), $link->getConstraint());
+                }
+            }
+            unset($rootRequires, $link);
+
+            $pool = $repositorySet->createPool($request, $this->io, $this->eventDispatcher, null, $this->ignoredTypes, $this->allowedTypes);
 
             // solve dependencies
             $solver = new Solver($policy, $pool, $this->io);
@@ -899,7 +917,7 @@ class Installer
         $this->fixedRootPackage->setRequires([]);
         $this->fixedRootPackage->setDevRequires([]);
 
-        $stabilityFlags[$this->package->getName()] = BasePackage::$stabilities[VersionParser::parseStability($this->package->getVersion())];
+        $stabilityFlags[$this->package->getName()] = BasePackage::STABILITIES[VersionParser::parseStability($this->package->getVersion())];
 
         $repositorySet = new RepositorySet($minimumStability, $stabilityFlags, $rootAliases, $this->package->getReferences(), $rootRequires, $this->temporaryConstraints);
         $repositorySet->addRepository(new RootPackageRepository($this->fixedRootPackage));
@@ -1109,6 +1127,32 @@ class Installer
     }
 
     /**
+     * Packages of those types are ignored, by default php-ext and php-ext-zend are ignored
+     *
+     * @param list<string> $types
+     * @return $this
+     */
+    public function setIgnoredTypes(array $types): self
+    {
+        $this->ignoredTypes = $types;
+
+        return $this;
+    }
+
+    /**
+     * Only packages of those types are allowed if set to non-null
+     *
+     * @param list<string>|null $types
+     * @return $this
+     */
+    public function setAllowedTypes(?array $types): self
+    {
+        $this->allowedTypes = $types;
+
+        return $this;
+    }
+
+    /**
      * @return $this
      */
     public function setAdditionalFixedRepository(RepositoryInterface $additionalFixedRepository): self
@@ -1136,7 +1180,7 @@ class Installer
      */
     public function setDryRun(bool $dryRun = true): self
     {
-        $this->dryRun = (bool) $dryRun;
+        $this->dryRun = $dryRun;
 
         return $this;
     }
@@ -1168,7 +1212,7 @@ class Installer
      */
     public function setPreferSource(bool $preferSource = true): self
     {
-        $this->preferSource = (bool) $preferSource;
+        $this->preferSource = $preferSource;
 
         return $this;
     }
@@ -1180,7 +1224,7 @@ class Installer
      */
     public function setPreferDist(bool $preferDist = true): self
     {
-        $this->preferDist = (bool) $preferDist;
+        $this->preferDist = $preferDist;
 
         return $this;
     }
@@ -1192,7 +1236,7 @@ class Installer
      */
     public function setOptimizeAutoloader(bool $optimizeAutoloader): self
     {
-        $this->optimizeAutoloader = (bool) $optimizeAutoloader;
+        $this->optimizeAutoloader = $optimizeAutoloader;
         if (!$this->optimizeAutoloader) {
             // Force classMapAuthoritative off when not optimizing the
             // autoloader
@@ -1210,7 +1254,7 @@ class Installer
      */
     public function setClassMapAuthoritative(bool $classMapAuthoritative): self
     {
-        $this->classMapAuthoritative = (bool) $classMapAuthoritative;
+        $this->classMapAuthoritative = $classMapAuthoritative;
         if ($this->classMapAuthoritative) {
             // Force optimizeAutoloader when classmap is authoritative
             $this->setOptimizeAutoloader(true);
@@ -1239,7 +1283,7 @@ class Installer
      */
     public function setUpdate(bool $update): self
     {
-        $this->update = (bool) $update;
+        $this->update = $update;
 
         return $this;
     }
@@ -1251,7 +1295,7 @@ class Installer
      */
     public function setInstall(bool $install): self
     {
-        $this->install = (bool) $install;
+        $this->install = $install;
 
         return $this;
     }
@@ -1263,7 +1307,7 @@ class Installer
      */
     public function setDevMode(bool $devMode = true): self
     {
-        $this->devMode = (bool) $devMode;
+        $this->devMode = $devMode;
 
         return $this;
     }
@@ -1277,7 +1321,7 @@ class Installer
      */
     public function setDumpAutoloader(bool $dumpAutoloader = true): self
     {
-        $this->dumpAutoloader = (bool) $dumpAutoloader;
+        $this->dumpAutoloader = $dumpAutoloader;
 
         return $this;
     }
@@ -1292,7 +1336,7 @@ class Installer
      */
     public function setRunScripts(bool $runScripts = true): self
     {
-        $this->runScripts = (bool) $runScripts;
+        $this->runScripts = $runScripts;
 
         return $this;
     }
@@ -1316,7 +1360,7 @@ class Installer
      */
     public function setVerbose(bool $verbose = true): self
     {
-        $this->verbose = (bool) $verbose;
+        $this->verbose = $verbose;
 
         return $this;
     }

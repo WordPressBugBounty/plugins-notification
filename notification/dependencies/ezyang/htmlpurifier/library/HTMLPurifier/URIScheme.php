@@ -4,7 +4,7 @@
  * Validator for the components of a URI for a specific scheme
  *
  * @license LGPL-2.1-or-later
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 abstract class BracketSpace_Notification_Dependencies_HTMLPurifier_URIScheme
 {
@@ -86,7 +86,7 @@ abstract class BracketSpace_Notification_Dependencies_HTMLPurifier_URIScheme
                     }
                     // URI is '////path', so we cannot nullify the
                     // host to preserve semantics.  Try expanding the
-                    // hostname BracketSpace_Notification_Dependencies_instead (fall through)
+                    // hostname instead (fall through)
                 }
                 // first see if we can manually insert a hostname
                 $host = $config->get('URI.Host');

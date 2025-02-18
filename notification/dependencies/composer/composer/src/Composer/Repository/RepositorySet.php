@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -70,7 +70,7 @@ class RepositorySet
 
     /**
      * @var int[] array of stability => BasePackage::STABILITY_* value
-     * @phpstan-var array<string, BasePackage::STABILITY_*>
+     * @phpstan-var array<key-of<BasePackage::STABILITIES>, BasePackage::STABILITY_*>
      */
     private $acceptableStabilities;
 
@@ -101,6 +101,7 @@ class RepositorySet
      * passing minimumStability is all you need to worry about. The rest is for advanced pool creation including
      * aliases, pinned references and other special cases.
      *
+     * @param key-of<BasePackage::STABILITIES> $minimumStability
      * @param int[]  $stabilityFlags   an array of package name => BasePackage::STABILITY_* value
      * @phpstan-param array<string, BasePackage::STABILITY_*> $stabilityFlags
      * @param array[] $rootAliases
@@ -117,8 +118,8 @@ class RepositorySet
         $this->rootReferences = $rootReferences;
 
         $this->acceptableStabilities = [];
-        foreach (BasePackage::$stabilities as $stability => $value) {
-            if ($value <= BasePackage::$stabilities[$minimumStability]) {
+        foreach (BasePackage::STABILITIES as $stability => $value) {
+            if ($value <= BasePackage::STABILITIES[$minimumStability]) {
                 $this->acceptableStabilities[$stability] = $value;
             }
         }
@@ -200,7 +201,7 @@ class RepositorySet
             }
         } else {
             foreach ($this->repositories as $repository) {
-                $result = $repository->loadPackages([$name => $constraint], $ignoreStability ? BasePackage::$stabilities : $this->acceptableStabilities, $ignoreStability ? [] : $this->stabilityFlags);
+                $result = $repository->loadPackages([$name => $constraint], $ignoreStability ? BasePackage::STABILITIES : $this->acceptableStabilities, $ignoreStability ? [] : $this->stabilityFlags);
 
                 $packages[] = $result['packages'];
                 foreach ($result['namesFound'] as $nameFound) {
@@ -305,8 +306,8 @@ class RepositorySet
     /**
      * Check for each given package name whether it would be accepted by this RepositorySet in the given $stability
      *
-     * @param  string[] $names
-     * @param  string   $stability one of 'stable', 'RC', 'beta', 'alpha' or 'dev'
+     * @param string[] $names
+     * @param key-of<BasePackage::STABILITIES> $stability one of 'stable', 'RC', 'beta', 'alpha' or 'dev'
      */
     public function isPackageAcceptable(array $names, string $stability): bool
     {
@@ -315,10 +316,15 @@ class RepositorySet
 
     /**
      * Create a pool for dependency resolution from the packages in this repository set.
+     *
+     * @param list<string>      $ignoredTypes Packages of those types are ignored
+     * @param list<string>|null $allowedTypes Only packages of those types are allowed if set to non-null
      */
-    public function createPool(Request $request, IOInterface $io, ?EventDispatcher $eventDispatcher = null, ?PoolOptimizer $poolOptimizer = null): Pool
+    public function createPool(Request $request, IOInterface $io, ?EventDispatcher $eventDispatcher = null, ?PoolOptimizer $poolOptimizer = null, array $ignoredTypes = [], ?array $allowedTypes = null): Pool
     {
         $poolBuilder = new PoolBuilder($this->acceptableStabilities, $this->stabilityFlags, $this->rootAliases, $this->rootReferences, $io, $eventDispatcher, $poolOptimizer, $this->temporaryConstraints);
+        $poolBuilder->setIgnoredTypes($ignoredTypes);
+        $poolBuilder->setAllowedTypes($allowedTypes);
 
         foreach ($this->repositories as $repo) {
             if (($repo instanceof InstalledRepositoryInterface || $repo instanceof InstalledRepository) && !$this->allowInstalledRepositories) {

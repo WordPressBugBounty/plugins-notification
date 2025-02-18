@@ -10,7 +10,7 @@
  *    this lexer will punt to DirectLex if DOM throws an exception.
  *
  * @license LGPL-2.1-or-later
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 
 class BracketSpace_Notification_Dependencies_HTMLPurifier_Lexer_PH5P extends BracketSpace_Notification_Dependencies_HTMLPurifier_Lexer_DOMLex
@@ -1754,7 +1754,7 @@ class BracketSpace_Notification_Dependencies_HTML5TreeConstructer
         ) {
             /* This specification does not define how to handle this case. In
             particular, user agents may ignore the entirety of this specification
-            altogether for such documents, and BracketSpace_Notification_Dependencies_instead invoke special parse modes
+            altogether for such documents, and instead invoke special parse modes
             with a greater emphasis on backwards compatibility. */
 
             $this->phase = self::ROOT_PHASE;
@@ -3058,7 +3058,7 @@ class BracketSpace_Notification_Dependencies_HTML5TreeConstructer
                             }
 
                             /* 3. If there is no furthest block, then the UA must
-                            skip the subsequent steps and BracketSpace_Notification_Dependencies_instead just pop all
+                            skip the subsequent steps and instead just pop all
                             the nodes from the bottom of the stack of open
                             elements, from the current node up to the formatting
                             element, and remove the formatting element from the
@@ -3487,7 +3487,7 @@ class BracketSpace_Notification_Dependencies_HTML5TreeConstructer
 
             /* If the current node is a table, tbody, tfoot, thead, or tr
             element, then, whenever a node would be inserted into the current
-            node, it must BracketSpace_Notification_Dependencies_instead be inserted into the foster parent element. */
+            node, it must instead be inserted into the foster parent element. */
             if (in_array(
                 end($this->stack)->nodeName,
                 array('table', 'tbody', 'tfoot', 'thead', 'tr')
@@ -4154,7 +4154,7 @@ class BracketSpace_Notification_Dependencies_HTML5TreeConstructer
             $token['type'] === BracketSpace_Notification_Dependencies_HTML5::STARTTAG
         ) {
             /* Parse error. Act as if the token had been an end tag with the
-            tag name "select" BracketSpace_Notification_Dependencies_instead. */
+            tag name "select" instead. */
             $this->inSelect(
                 array(
                     'name' => 'select',

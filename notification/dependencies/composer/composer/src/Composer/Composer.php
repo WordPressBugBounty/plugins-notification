@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -56,9 +56,9 @@ class Composer extends PartialComposer
      *
      * @see getVersion()
      */
-    public const VERSION = '2.7.2';
+    public const VERSION = '2.8.1';
     public const BRANCH_ALIAS_VERSION = '';
-    public const RELEASE_DATE = '2024-03-11 17:12:18';
+    public const RELEASE_DATE = '2024-10-04 11:31:01';
     public const SOURCE_VERSION = '';
 
     /**

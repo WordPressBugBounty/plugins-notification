@@ -2,7 +2,7 @@
 /**
  * @license BSD-3-Clause
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 namespace BracketSpace\Notification\Dependencies\PhpParser\ErrorHandler;
@@ -15,12 +15,11 @@ use BracketSpace\Notification\Dependencies\PhpParser\ErrorHandler;
  *
  * This allows graceful handling of errors.
  */
-class Collecting implements ErrorHandler
-{
+class Collecting implements ErrorHandler {
     /** @var Error[] Collected errors */
-    private $errors = [];
+    private array $errors = [];
 
-    public function handleError(Error $error) {
+    public function handleError(Error $error): void {
         $this->errors[] = $error;
     }
 
@@ -29,23 +28,21 @@ class Collecting implements ErrorHandler
      *
      * @return Error[]
      */
-    public function getErrors() : array {
+    public function getErrors(): array {
         return $this->errors;
     }
 
     /**
      * Check whether there are any errors.
-     *
-     * @return bool
      */
-    public function hasErrors() : bool {
+    public function hasErrors(): bool {
         return !empty($this->errors);
     }
 
     /**
      * Reset/clear collected errors.
      */
-    public function clearErrors() {
+    public function clearErrors(): void {
         $this->errors = [];
     }
 }

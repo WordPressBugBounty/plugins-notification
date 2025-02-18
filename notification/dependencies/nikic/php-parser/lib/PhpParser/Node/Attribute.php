@@ -2,7 +2,7 @@
 /**
  * @license BSD-3-Clause
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 namespace BracketSpace\Notification\Dependencies\PhpParser\Node;
@@ -10,18 +10,17 @@ namespace BracketSpace\Notification\Dependencies\PhpParser\Node;
 use BracketSpace\Notification\Dependencies\PhpParser\Node;
 use BracketSpace\Notification\Dependencies\PhpParser\NodeAbstract;
 
-class Attribute extends NodeAbstract
-{
+class Attribute extends NodeAbstract {
     /** @var Name Attribute name */
-    public $name;
+    public Name $name;
 
-    /** @var Arg[] Attribute arguments */
-    public $args;
+    /** @var list<Arg> Attribute arguments */
+    public array $args;
 
     /**
-     * @param Node\Name $name       Attribute name
-     * @param Arg[]     $args       Attribute arguments
-     * @param array     $attributes Additional node attributes
+     * @param Node\Name $name Attribute name
+     * @param list<Arg> $args Attribute arguments
+     * @param array<string, mixed> $attributes Additional node attributes
      */
     public function __construct(Name $name, array $args = [], array $attributes = []) {
         $this->attributes = $attributes;
@@ -29,11 +28,11 @@ class Attribute extends NodeAbstract
         $this->args = $args;
     }
 
-    public function getSubNodeNames() : array {
+    public function getSubNodeNames(): array {
         return ['name', 'args'];
     }
 
-    public function getType() : string {
+    public function getType(): string {
         return 'Attribute';
     }
 }

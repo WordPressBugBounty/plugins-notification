@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -354,6 +354,11 @@ class AliasPackage extends BasePackage
     public function getIncludePaths(): array
     {
         return $this->aliasOf->getIncludePaths();
+    }
+
+    public function getPhpExt(): ?array
+    {
+        return $this->aliasOf->getPhpExt();
     }
 
     public function getReleaseDate(): ?\DateTimeInterface

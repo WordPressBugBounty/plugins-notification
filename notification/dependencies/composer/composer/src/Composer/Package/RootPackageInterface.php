@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -38,6 +38,8 @@ interface RootPackageInterface extends CompletePackageInterface
 
     /**
      * Returns the minimum stability of the package
+     *
+     * @return key-of<BasePackage::STABILITIES>
      */
     public function getMinimumStability(): string;
 
@@ -125,12 +127,14 @@ interface RootPackageInterface extends CompletePackageInterface
     /**
      * Set the stabilityFlags
      *
-     * @param array<string, BasePackage::STABILITY_*> $stabilityFlags
+     * @phpstan-param array<string, BasePackage::STABILITY_*> $stabilityFlags
      */
     public function setStabilityFlags(array $stabilityFlags): void;
 
     /**
      * Set the minimumStability
+     *
+     * @phpstan-param key-of<BasePackage::STABILITIES> $minimumStability
      */
     public function setMinimumStability(string $minimumStability): void;
 

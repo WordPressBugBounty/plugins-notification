@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view
  * the LICENSE file that was distributed with this source code.
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 
 namespace BracketSpace\Notification\Dependencies\Composer\Pcre;
@@ -45,6 +45,7 @@ class Regex
      */
     public static function matchStrictGroups(string $pattern, string $subject, int $flags = 0, int $offset = 0): MatchStrictGroupsResult
     {
+        // @phpstan-ignore composerPcre.maybeUnsafeStrictGroups
         $count = Preg::matchStrictGroups($pattern, $subject, $matches, $flags, $offset);
 
         return new MatchStrictGroupsResult($count, $matches);
@@ -89,6 +90,7 @@ class Regex
         self::checkOffsetCapture($flags, 'matchAllWithOffsets');
         self::checkSetOrder($flags);
 
+        // @phpstan-ignore composerPcre.maybeUnsafeStrictGroups
         $count = Preg::matchAllStrictGroups($pattern, $subject, $matches, $flags, $offset);
 
         return new MatchAllStrictGroupsResult($count, $matches);

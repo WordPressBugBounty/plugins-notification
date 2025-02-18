@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -77,12 +77,13 @@ interface RepositoryInterface extends \Countable
      * - The namesFound returned are names which should be considered as canonically found in this repository, that should not be looked up in any further lower priority repositories
      *
      * @param ConstraintInterface[]                          $packageNameMap        package names pointing to constraints
-     * @param array<string, BasePackage::STABILITY_*>        $acceptableStabilities array of stability => BasePackage::STABILITY_* value
+     * @param array<string, int>        $acceptableStabilities array of stability => BasePackage::STABILITY_* value
      * @param array<string, BasePackage::STABILITY_*>        $stabilityFlags        an array of package name => BasePackage::STABILITY_* value
      * @param array<string, array<string, PackageInterface>> $alreadyLoaded         an array of package name => package version => package
      *
      * @return array
      *
+     * @phpstan-param  array<key-of<BasePackage::STABILITIES>, BasePackage::STABILITY_*> $acceptableStabilities
      * @phpstan-param  array<string, ConstraintInterface|null> $packageNameMap
      * @phpstan-return array{namesFound: array<string>, packages: array<BasePackage>}
      */

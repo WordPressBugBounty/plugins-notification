@@ -2,7 +2,7 @@
 /**
  * @license BSD-3-Clause
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 namespace BracketSpace\Notification\Dependencies\PhpParser\Node\Expr;
@@ -15,22 +15,21 @@ use BracketSpace\Notification\Dependencies\PhpParser\Node\Expr;
  * An error node may be placed at a position where an expression is required, but an error occurred.
  * Error nodes will not be present if the parser is run in throwOnError mode (the default).
  */
-class Error extends Expr
-{
+class Error extends Expr {
     /**
      * Constructs an error node.
      *
-     * @param array $attributes Additional attributes
+     * @param array<string, mixed> $attributes Additional attributes
      */
     public function __construct(array $attributes = []) {
         $this->attributes = $attributes;
     }
 
-    public function getSubNodeNames() : array {
+    public function getSubNodeNames(): array {
         return [];
     }
-    
-    public function getType() : string {
+
+    public function getType(): string {
         return 'Expr_Error';
     }
 }

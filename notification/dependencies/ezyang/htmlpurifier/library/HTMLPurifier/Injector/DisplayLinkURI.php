@@ -1,10 +1,10 @@
 <?php
 
 /**
- * Injector that displays the URL of an anchor BracketSpace_Notification_Dependencies_instead of linking to it, in addition to showing the text of the link.
+ * Injector that displays the URL of an anchor instead of linking to it, in addition to showing the text of the link.
  *
  * @license LGPL-2.1-or-later
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 class BracketSpace_Notification_Dependencies_HTMLPurifier_Injector_DisplayLinkURI extends BracketSpace_Notification_Dependencies_HTMLPurifier_Injector
 {

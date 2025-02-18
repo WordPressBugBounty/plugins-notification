@@ -2,29 +2,28 @@
 /**
  * @license BSD-3-Clause
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 namespace BracketSpace\Notification\Dependencies\PhpParser\Node\Stmt;
 
 use BracketSpace\Notification\Dependencies\PhpParser\Node;
 
-class TryCatch extends Node\Stmt
-{
+class TryCatch extends Node\Stmt {
     /** @var Node\Stmt[] Statements */
-    public $stmts;
+    public array $stmts;
     /** @var Catch_[] Catches */
-    public $catches;
+    public array $catches;
     /** @var null|Finally_ Optional finally node */
-    public $finally;
+    public ?Finally_ $finally;
 
     /**
      * Constructs a try catch node.
      *
-     * @param Node\Stmt[]   $stmts      Statements
-     * @param Catch_[]      $catches    Catches
-     * @param null|Finally_ $finally    Optional finally node
-     * @param array         $attributes Additional attributes
+     * @param Node\Stmt[] $stmts Statements
+     * @param Catch_[] $catches Catches
+     * @param null|Finally_ $finally Optional finally node
+     * @param array<string, mixed> $attributes Additional attributes
      */
     public function __construct(array $stmts, array $catches, ?Finally_ $finally = null, array $attributes = []) {
         $this->attributes = $attributes;
@@ -33,11 +32,11 @@ class TryCatch extends Node\Stmt
         $this->finally = $finally;
     }
 
-    public function getSubNodeNames() : array {
+    public function getSubNodeNames(): array {
         return ['stmts', 'catches', 'finally'];
     }
 
-    public function getType() : string {
+    public function getType(): string {
         return 'Stmt_TryCatch';
     }
 }

@@ -2,26 +2,23 @@
 /**
  * @license BSD-3-Clause
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 namespace BracketSpace\Notification\Dependencies\PhpParser;
 
-interface NodeTraverserInterface
-{
+interface NodeTraverserInterface {
     /**
      * Adds a visitor.
      *
      * @param NodeVisitor $visitor Visitor to add
      */
-    public function addVisitor(NodeVisitor $visitor);
+    public function addVisitor(NodeVisitor $visitor): void;
 
     /**
      * Removes an added visitor.
-     *
-     * @param NodeVisitor $visitor
      */
-    public function removeVisitor(NodeVisitor $visitor);
+    public function removeVisitor(NodeVisitor $visitor): void;
 
     /**
      * Traverses an array of nodes using the registered visitors.
@@ -30,5 +27,5 @@ interface NodeTraverserInterface
      *
      * @return Node[] Traversed array of nodes
      */
-    public function traverse(array $nodes) : array;
+    public function traverse(array $nodes): array;
 }

@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -16,6 +16,8 @@
  */
 
 namespace BracketSpace\Notification\Dependencies\Composer\ClassMapGenerator;
+
+use BracketSpace\Notification\Dependencies\Composer\Pcre\Preg;
 
 /**
  * @author Jordi Boggiano <j.boggiano@seld.be>
@@ -33,7 +35,7 @@ class ClassMap implements \Countable
     private $ambiguousClasses = [];
 
     /**
-     * @var string[]
+     * @var array<string, array<array{warning: string, className: string}>>
      */
     private $psrViolations = [];
 
@@ -60,7 +62,13 @@ class ClassMap implements \Countable
      */
     public function getPsrViolations(): array
     {
-        return $this->psrViolations;
+        if (\count($this->psrViolations) === 0) {
+            return [];
+        }
+
+        return array_map(static function (array $violation): string {
+            return $violation['warning'];
+        }, array_merge(...array_values($this->psrViolations)));
     }
 
     /**
@@ -70,11 +78,36 @@ class ClassMap implements \Countable
      *
      * To get the path the class is being mapped to, call getClassPath
      *
+     * By default, paths that contain test(s), fixture(s), example(s) or stub(s) are ignored
+     * as those are typically not problematic when they're dummy classes in the tests folder.
+     * If you want to get these back as well you can pass false to $duplicatesFilter. Or
+     * you can pass your own pattern to exclude if you need to change the default.
+     *
+     * @param non-empty-string|false $duplicatesFilter
+     *
      * @return array<class-string, array<non-empty-string>>
      */
-    public function getAmbiguousClasses(): array
+    public function getAmbiguousClasses($duplicatesFilter = '{/(test|fixture|example|stub)s?/}i'): array
     {
-        return $this->ambiguousClasses;
+        if (false === $duplicatesFilter) {
+            return $this->ambiguousClasses;
+        }
+
+        if (true === $duplicatesFilter) {
+            throw new \InvalidArgumentException('$duplicatesFilter should be false or a string with a valid regex, got true.');
+        }
+
+        $ambiguousClasses = [];
+        foreach ($this->ambiguousClasses as $class => $paths) {
+            $paths = array_filter($paths, function ($path) use ($duplicatesFilter) {
+                return !Preg::isMatch($duplicatesFilter, strtr($path, '\\', '/'));
+            });
+            if (\count($paths) > 0) {
+                $ambiguousClasses[$class] = array_values($paths);
+            }
+        }
+
+        return $ambiguousClasses;
     }
 
     /**
@@ -91,6 +124,8 @@ class ClassMap implements \Countable
      */
     public function addClass(string $className, string $path): void
     {
+        unset($this->psrViolations[strtr($path, '\\', '/')]);
+
         $this->map[$className] = $path;
     }
 
@@ -115,9 +150,22 @@ class ClassMap implements \Countable
         return isset($this->map[$className]);
     }
 
-    public function addPsrViolation(string $warning): void
+    public function addPsrViolation(string $warning, string $className, string $path): void
     {
-        $this->psrViolations[] = $warning;
+        $path = rtrim(strtr($path, '\\', '/'), '/');
+
+        $this->psrViolations[$path][] = ['warning' => $warning, 'className' => $className];
+    }
+
+    public function clearPsrViolationsByPath(string $pathPrefix): void
+    {
+        $pathPrefix = rtrim(strtr($pathPrefix, '\\', '/'), '/');
+
+        foreach ($this->psrViolations as $path => $violations) {
+            if ($path === $pathPrefix || 0 === \strpos($path, $pathPrefix.'/')) {
+                unset($this->psrViolations[$path]);
+            }
+        }
     }
 
     /**

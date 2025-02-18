@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -437,8 +437,7 @@ class ComposerRepository extends ArrayRepository implements ConfigurableReposito
 
         $uniques = [];
         foreach ($names as $name) {
-            // @phpstan-ignore-next-line
-            $uniques[substr($name, 0, strpos($name, '/'))] = true;
+            $uniques[explode('/', $name, 2)[0]] = true;
         }
 
         $vendors = array_keys($uniques);
@@ -833,7 +832,7 @@ class ComposerRepository extends ArrayRepository implements ConfigurableReposito
     /**
      * @param  string      $name package name
      * @param array<string, int>|null $acceptableStabilities
-     * @phpstan-param array<string, BasePackage::STABILITY_*>|null $acceptableStabilities
+     * @phpstan-param array<key-of<BasePackage::STABILITIES>, BasePackage::STABILITY_*>|null $acceptableStabilities
      * @param array<string, int>|null $stabilityFlags an array of package name => BasePackage::STABILITY_* value
      * @phpstan-param array<string, BasePackage::STABILITY_*>|null $stabilityFlags
      * @param array<string, array<string, PackageInterface>> $alreadyLoaded
@@ -1003,7 +1002,7 @@ class ComposerRepository extends ArrayRepository implements ConfigurableReposito
      * @param array<string, ConstraintInterface|null> $packageNames array of package name => ConstraintInterface|null - if a constraint is provided, only
      *                                                packages matching it will be loaded
      * @param array<string, int>|null $acceptableStabilities
-     * @phpstan-param array<string, BasePackage::STABILITY_*>|null $acceptableStabilities
+     * @phpstan-param array<key-of<BasePackage::STABILITIES>, BasePackage::STABILITY_*>|null $acceptableStabilities
      * @param array<string, int>|null $stabilityFlags an array of package name => BasePackage::STABILITY_* value
      * @phpstan-param array<string, BasePackage::STABILITY_*>|null $stabilityFlags
      * @param array<string, array<string, PackageInterface>> $alreadyLoaded
@@ -1135,7 +1134,7 @@ class ComposerRepository extends ArrayRepository implements ConfigurableReposito
      * @param string $name package name (must be lowercased already)
      * @param array<string, mixed> $versionData
      * @param array<string, int>|null $acceptableStabilities
-     * @phpstan-param array<string, BasePackage::STABILITY_*>|null $acceptableStabilities
+     * @phpstan-param array<key-of<BasePackage::STABILITIES>, BasePackage::STABILITY_*>|null $acceptableStabilities
      * @param array<string, int>|null $stabilityFlags an array of package name => BasePackage::STABILITY_* value
      * @phpstan-param array<string, BasePackage::STABILITY_*>|null $stabilityFlags
      */

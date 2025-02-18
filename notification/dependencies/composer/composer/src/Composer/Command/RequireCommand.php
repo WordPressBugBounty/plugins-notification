@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -407,6 +407,8 @@ EOT
 
     /**
      * @param array<string, string> $requirements
+     * @param 'require'|'require-dev' $requireKey
+     * @param 'require'|'require-dev' $removeKey
      * @throws \Exception
      */
     private function doUpdate(InputInterface $input, OutputInterface $output, IOInterface $io, array $requirements, string $requireKey, string $removeKey): int
@@ -564,10 +566,16 @@ EOT
                 }
                 $lockFile = Factory::getLockFile($this->json->getPath());
                 if (file_exists($lockFile)) {
+                    $stabilityFlags = RootPackageLoader::extractStabilityFlags($requirements, $composer->getPackage()->getMinimumStability(), []);
+
                     $lockMtime = filemtime($lockFile);
                     $lock = new JsonFile($lockFile);
                     $lockData = $lock->read();
                     $lockData['content-hash'] = Locker::getContentHash($contents);
+                    foreach ($stabilityFlags as $packageName => $flag) {
+                        $lockData['stability-flags'][$packageName] = $flag;
+                    }
+                    ksort($lockData['stability-flags']);
                     $lock->write($lockData);
                     if (is_int($lockMtime)) {
                         @touch($lockFile, $lockMtime);

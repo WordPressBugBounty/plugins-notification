@@ -2,34 +2,33 @@
 /**
  * @license BSD-3-Clause
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 namespace BracketSpace\Notification\Dependencies\PhpParser\Node\Stmt;
 
 use BracketSpace\Notification\Dependencies\PhpParser\Node\Stmt;
 
-class InlineHTML extends Stmt
-{
+class InlineHTML extends Stmt {
     /** @var string String */
-    public $value;
+    public string $value;
 
     /**
      * Constructs an inline HTML node.
      *
-     * @param string $value      String
-     * @param array  $attributes Additional attributes
+     * @param string $value String
+     * @param array<string, mixed> $attributes Additional attributes
      */
     public function __construct(string $value, array $attributes = []) {
         $this->attributes = $attributes;
         $this->value = $value;
     }
 
-    public function getSubNodeNames() : array {
+    public function getSubNodeNames(): array {
         return ['value'];
     }
-    
-    public function getType() : string {
+
+    public function getType(): string {
         return 'Stmt_InlineHTML';
     }
 }

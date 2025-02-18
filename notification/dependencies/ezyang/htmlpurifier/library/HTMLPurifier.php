@@ -18,7 +18,7 @@
  * and BracketSpace_Notification_Dependencies_HTMLPurifier_Config.
  *
  *@license LGPL-2.1-or-later
- *Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ *Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 
 /*
@@ -148,7 +148,7 @@ class BracketSpace_Notification_Dependencies_HTMLPurifier
      */
     public function purify($html, $config = null)
     {
-        // :TODO: make the config merge in, BracketSpace_Notification_Dependencies_instead of replace
+        // :TODO: make the config merge in, instead of replace
         $config = $config ? BracketSpace_Notification_Dependencies_HTMLPurifier_Config::create($config) : $this->config;
 
         // implementation is partially environment dependant, partially

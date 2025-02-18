@@ -4,7 +4,7 @@
  * Validates a font family list according to CSS spec
  *
  * @license LGPL-2.1-or-later
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 class BracketSpace_Notification_Dependencies_HTMLPurifier_AttrDef_CSS_FontFamily extends BracketSpace_Notification_Dependencies_HTMLPurifier_AttrDef
 {
@@ -135,7 +135,7 @@ class BracketSpace_Notification_Dependencies_HTMLPurifier_AttrDef_CSS_FontFamily
             //    <http://www.google.co.jp/search?q=font-family+ＭＳ+明朝|ゴシック>
             //    However, most of these fonts have ASCII equivalents:
             //    for example, 'MS Mincho', and it's considered
-            //    professional to use ASCII font names BracketSpace_Notification_Dependencies_instead of
+            //    professional to use ASCII font names instead of
             //    Unicode font names.  Thanks Takeshi Terada for
             //    providing this information.
             //  The following characters, to my knowledge, have not been

@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 
 namespace BracketSpace\Notification\Dependencies\Symfony\Component\Filesystem;
@@ -175,7 +175,7 @@ class Filesystem
                 }
             } elseif (is_dir($file)) {
                 if (!$isRecursive) {
-                    $tmpName = \dirname(realpath($file)).'/.'.strrev(strtr(base64_encode(random_bytes(2)), '/=', '-_'));
+                    $tmpName = \dirname(realpath($file)).'/.!'.strrev(strtr(base64_encode(random_bytes(2)), '/=', '-!'));
 
                     if (file_exists($tmpName)) {
                         try {
@@ -235,6 +235,9 @@ class Filesystem
     /**
      * Change the owner of an array of files or directories.
      *
+     * This method always throws on Windows, as the underlying PHP function is not supported.
+     * @see https://www.php.net/chown
+     *
      * @param string|iterable $files     A filename, an array of files, or a \Traversable instance to change owner
      * @param string|int      $user      A user name or number
      * @param bool            $recursive Whether change the owner recursively or not
@@ -261,6 +264,9 @@ class Filesystem
 
     /**
      * Change the group of an array of files or directories.
+     *
+     * This method always throws on Windows, as the underlying PHP function is not supported.
+     * @see https://www.php.net/chgrp
      *
      * @param string|iterable $files     A filename, an array of files, or a \Traversable instance to change group
      * @param string|int      $group     A group name or number
@@ -693,11 +699,15 @@ class Filesystem
                 throw new IOException(sprintf('Failed to write file "%s": ', $filename).self::$lastError, 0, null, $filename);
             }
 
-            self::box('chmod', $tmpFile, file_exists($filename) ? fileperms($filename) : 0666 & ~umask());
+            self::box('chmod', $tmpFile, self::box('fileperms', $filename) ?: 0666 & ~umask());
 
             $this->rename($tmpFile, $filename, true);
         } finally {
             if (file_exists($tmpFile)) {
+                if ('\\' === \DIRECTORY_SEPARATOR && !is_writable($tmpFile)) {
+                    self::box('chmod', $tmpFile, self::box('fileperms', $tmpFile) | 0200);
+                }
+
                 self::box('unlink', $tmpFile);
             }
         }

@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -31,8 +31,8 @@ interface PolicyInterface
     public function versionCompare(PackageInterface $a, PackageInterface $b, string $operator): bool;
 
     /**
-     * @param  int[]   $literals
-     * @return int[]
+     * @param  non-empty-list<int>   $literals
+     * @return non-empty-list<int>
      */
     public function selectPreferredPackages(Pool $pool, array $literals, ?string $requiredPackage = null): array;
 }

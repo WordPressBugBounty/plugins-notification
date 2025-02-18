@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -20,6 +20,7 @@ namespace BracketSpace\Notification\Dependencies\Composer\IO;
 use BracketSpace\Notification\Dependencies\Composer\Config;
 use BracketSpace\Notification\Dependencies\Composer\Pcre\Preg;
 use BracketSpace\Notification\Dependencies\Composer\Util\ProcessExecutor;
+use BracketSpace\Notification\Dependencies\Composer\Util\Silencer;
 use BracketSpace\Notification\Dependencies\Psr\Log\LogLevel;
 
 abstract class BaseIO implements IOInterface
@@ -180,49 +181,84 @@ abstract class BaseIO implements IOInterface
         ProcessExecutor::setTimeout($config->get('process-timeout'));
     }
 
+    /**
+     * @param string|\Stringable $message
+     */
     public function emergency($message, array $context = []): void
     {
         $this->log(LogLevel::EMERGENCY, $message, $context);
     }
 
+    /**
+     * @param string|\Stringable $message
+     */
     public function alert($message, array $context = []): void
     {
         $this->log(LogLevel::ALERT, $message, $context);
     }
 
+    /**
+     * @param string|\Stringable $message
+     */
     public function critical($message, array $context = []): void
     {
         $this->log(LogLevel::CRITICAL, $message, $context);
     }
 
+    /**
+     * @param string|\Stringable $message
+     */
     public function error($message, array $context = []): void
     {
         $this->log(LogLevel::ERROR, $message, $context);
     }
 
+    /**
+     * @param string|\Stringable $message
+     */
     public function warning($message, array $context = []): void
     {
         $this->log(LogLevel::WARNING, $message, $context);
     }
 
+    /**
+     * @param string|\Stringable $message
+     */
     public function notice($message, array $context = []): void
     {
         $this->log(LogLevel::NOTICE, $message, $context);
     }
 
+    /**
+     * @param string|\Stringable $message
+     */
     public function info($message, array $context = []): void
     {
         $this->log(LogLevel::INFO, $message, $context);
     }
 
+    /**
+     * @param string|\Stringable $message
+     */
     public function debug($message, array $context = []): void
     {
         $this->log(LogLevel::DEBUG, $message, $context);
     }
 
+    /**
+     * @param mixed|LogLevel::* $level
+     * @param string|\Stringable $message
+     */
     public function log($level, $message, array $context = []): void
     {
         $message = (string) $message;
+
+        if ($context !== []) {
+            $json = Silencer::call('json_encode', $context, JSON_INVALID_UTF8_IGNORE|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
+            if ($json !== false) {
+                $message .= ' ' . $json;
+            }
+        }
 
         if (in_array($level, [LogLevel::EMERGENCY, LogLevel::ALERT, LogLevel::CRITICAL, LogLevel::ERROR])) {
             $this->writeError('<error>'.$message.'</error>');

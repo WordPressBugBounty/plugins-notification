@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -18,6 +18,7 @@
 namespace BracketSpace\Notification\Dependencies\Composer\Command;
 
 use BracketSpace\Notification\Dependencies\Composer\Package\Link;
+use BracketSpace\Notification\Dependencies\Composer\Package\Package;
 use BracketSpace\Notification\Dependencies\Composer\Package\PackageInterface;
 use BracketSpace\Notification\Dependencies\Composer\Package\CompletePackageInterface;
 use BracketSpace\Notification\Dependencies\Composer\Package\RootPackage;
@@ -29,6 +30,8 @@ use BracketSpace\Notification\Dependencies\Composer\Repository\PlatformRepositor
 use BracketSpace\Notification\Dependencies\Composer\Repository\RepositoryFactory;
 use BracketSpace\Notification\Dependencies\Composer\Plugin\CommandEvent;
 use BracketSpace\Notification\Dependencies\Composer\Plugin\PluginEvents;
+use BracketSpace\Notification\Dependencies\Composer\Semver\Constraint\Bound;
+use BracketSpace\Notification\Dependencies\Composer\Util\Platform;
 use BracketSpace\Notification\Dependencies\Symfony\Component\Console\Formatter\OutputFormatter;
 use BracketSpace\Notification\Dependencies\Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use BracketSpace\Notification\Dependencies\Composer\Package\Version\VersionParser;
@@ -107,13 +110,27 @@ abstract class BaseDependencyCommand extends BaseCommand
 
         // If the version we ask for is not installed then we need to locate it in remote repos and add it.
         // This is needed for why-not to resolve conflicts from an uninstalled version against installed packages.
-        if (!$installedRepo->findPackage($needle, $textConstraint)) {
+        $matchedPackage = $installedRepo->findPackage($needle, $textConstraint);
+        if (!$matchedPackage) {
             $defaultRepos = new CompositeRepository(RepositoryFactory::defaultRepos($this->getIO(), $composer->getConfig(), $composer->getRepositoryManager()));
             if ($match = $defaultRepos->findPackage($needle, $textConstraint)) {
                 $installedRepo->addRepository(new InstalledArrayRepository([clone $match]));
+            } elseif (PlatformRepository::isPlatformPackage($needle)) {
+                $parser = new VersionParser();
+                $constraint = $parser->parseConstraints($textConstraint);
+                if ($constraint->getLowerBound() !== Bound::zero()) {
+                    $tempPlatformPkg = new Package($needle, $constraint->getLowerBound()->getVersion(), $constraint->getLowerBound()->getVersion());
+                    $installedRepo->addRepository(new InstalledArrayRepository([$tempPlatformPkg]));
+                }
             } else {
                 $this->getIO()->writeError('<error>Package "'.$needle.'" could not be found with constraint "'.$textConstraint.'", results below will most likely be incomplete.</error>');
             }
+        } elseif (PlatformRepository::isPlatformPackage($needle)) {
+            $extraNotice = '';
+            if (($matchedPackage->getExtra()['config.platform'] ?? false) === true) {
+                $extraNotice = ' (version provided by config.platform)';
+            }
+            $this->getIO()->writeError('<info>Package "'.$needle.' '.$textConstraint.'" found in version "'.$matchedPackage->getPrettyVersion().'"'.$extraNotice.'.</info>');
         }
 
         // Include replaced packages for inverted lookups as they are then the actual starting point to consider
@@ -159,7 +176,7 @@ abstract class BaseDependencyCommand extends BaseCommand
             $this->printTable($output, $results);
         }
 
-        if ($inverted && $input->hasArgument(self::ARGUMENT_CONSTRAINT)) {
+        if ($inverted && $input->hasArgument(self::ARGUMENT_CONSTRAINT) && !PlatformRepository::isPlatformPackage($needle)) {
             $composerCommand = 'update';
 
             foreach ($composer->getPackage()->getRequires() as $rootRequirement) {

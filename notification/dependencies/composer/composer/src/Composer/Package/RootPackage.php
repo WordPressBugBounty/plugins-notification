@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -26,7 +26,7 @@ class RootPackage extends CompletePackage implements RootPackageInterface
 {
     public const DEFAULT_PRETTY_VERSION = '1.0.0+no-version-set';
 
-    /** @var string */
+    /** @var key-of<BasePackage::STABILITIES> */
     protected $minimumStability = 'stable';
     /** @var bool */
     protected $preferStable = false;

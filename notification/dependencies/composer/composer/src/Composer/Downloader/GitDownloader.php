@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -72,7 +72,7 @@ class GitDownloader extends VcsDownloader implements DvcsDownloaderInterface
 
         GitUtil::cleanEnv();
 
-        $cachePath = $this->config->get('cache-vcs-dir').'/'.Preg::replace('{[^a-z0-9.]}i', '-', $url).'/';
+        $cachePath = $this->config->get('cache-vcs-dir').'/'.Preg::replace('{[^a-z0-9.]}i', '-', Url::sanitize($url)).'/';
         $gitVersion = GitUtil::getVersion($this->process);
 
         // --dissociate option is only available since git 2.3.0-rc0
@@ -97,7 +97,7 @@ class GitDownloader extends VcsDownloader implements DvcsDownloaderInterface
     {
         GitUtil::cleanEnv();
         $path = $this->normalizePath($path);
-        $cachePath = $this->config->get('cache-vcs-dir').'/'.Preg::replace('{[^a-z0-9.]}i', '-', $url).'/';
+        $cachePath = $this->config->get('cache-vcs-dir').'/'.Preg::replace('{[^a-z0-9.]}i', '-', Url::sanitize($url)).'/';
         $ref = $package->getSourceReference();
         $flag = Platform::isWindows() ? '/D ' : '';
 
@@ -166,7 +166,7 @@ class GitDownloader extends VcsDownloader implements DvcsDownloaderInterface
             throw new \RuntimeException('The .git directory is missing from '.$path.', see https://getcomposer.org/commit-deps for more information');
         }
 
-        $cachePath = $this->config->get('cache-vcs-dir').'/'.Preg::replace('{[^a-z0-9.]}i', '-', $url).'/';
+        $cachePath = $this->config->get('cache-vcs-dir').'/'.Preg::replace('{[^a-z0-9.]}i', '-', Url::sanitize($url)).'/';
         $ref = $target->getSourceReference();
 
         if (!empty($this->cachedPackages[$target->getId()][$ref])) {
@@ -260,7 +260,7 @@ class GitDownloader extends VcsDownloader implements DvcsDownloaderInterface
         }
 
         $headRef = $match[1];
-        if (!Preg::isMatchAllStrictGroups('{^'.$headRef.' refs/heads/(.+)$}mi', $refs, $matches)) {
+        if (!Preg::isMatchAllStrictGroups('{^'.preg_quote($headRef).' refs/heads/(.+)$}mi', $refs, $matches)) {
             // not on a branch, we are either on a not-modified tag or some sort of detached head, so skip this
             return null;
         }
@@ -299,9 +299,9 @@ class GitDownloader extends VcsDownloader implements DvcsDownloaderInterface
                     $unpushedChanges = null;
                 }
                 foreach ($remoteBranches as $remoteBranch) {
-                    $command = sprintf('git diff --name-status %s...%s --', $remoteBranch, $branch);
+                    $command = ['git', 'diff', '--name-status', $remoteBranch.'...'.$branch, '--'];
                     if (0 !== $this->process->execute($command, $output, $path)) {
-                        throw new \RuntimeException('Failed to execute ' . $command . "\n\n" . $this->process->getErrorOutput());
+                        throw new \RuntimeException('Failed to execute ' . implode(' ', $command) . "\n\n" . $this->process->getErrorOutput());
                     }
 
                     $output = trim($output);

@@ -2,7 +2,7 @@
 /**
  * @license BSD-3-Clause
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 namespace BracketSpace\Notification\Dependencies\PhpParser\Node\Stmt;
@@ -10,20 +10,19 @@ namespace BracketSpace\Notification\Dependencies\PhpParser\Node\Stmt;
 use BracketSpace\Notification\Dependencies\PhpParser\Node;
 use BracketSpace\Notification\Dependencies\PhpParser\Node\AttributeGroup;
 
-class EnumCase extends Node\Stmt
-{
+class EnumCase extends Node\Stmt {
     /** @var Node\Identifier Enum case name */
-    public $name;
+    public Node\Identifier $name;
     /** @var Node\Expr|null Enum case expression */
-    public $expr;
+    public ?Node\Expr $expr;
     /** @var Node\AttributeGroup[] PHP attribute groups */
-    public $attrGroups;
+    public array $attrGroups;
 
     /**
-     * @param string|Node\Identifier    $name       Enum case name
-     * @param Node\Expr|null            $expr       Enum case expression
-     * @param AttributeGroup[]          $attrGroups PHP attribute groups
-     * @param array                     $attributes Additional attributes
+     * @param string|Node\Identifier $name Enum case name
+     * @param Node\Expr|null $expr Enum case expression
+     * @param list<AttributeGroup> $attrGroups PHP attribute groups
+     * @param array<string, mixed> $attributes Additional attributes
      */
     public function __construct($name, ?Node\Expr $expr = null, array $attrGroups = [], array $attributes = []) {
         parent::__construct($attributes);
@@ -32,11 +31,11 @@ class EnumCase extends Node\Stmt
         $this->attrGroups = $attrGroups;
     }
 
-    public function getSubNodeNames() : array {
+    public function getSubNodeNames(): array {
         return ['attrGroups', 'name', 'expr'];
     }
 
-    public function getType() : string {
+    public function getType(): string {
         return 'Stmt_EnumCase';
     }
 }

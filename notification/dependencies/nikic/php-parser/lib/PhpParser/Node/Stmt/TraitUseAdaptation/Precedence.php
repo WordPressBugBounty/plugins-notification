@@ -2,25 +2,24 @@
 /**
  * @license BSD-3-Clause
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 namespace BracketSpace\Notification\Dependencies\PhpParser\Node\Stmt\TraitUseAdaptation;
 
 use BracketSpace\Notification\Dependencies\PhpParser\Node;
 
-class Precedence extends Node\Stmt\TraitUseAdaptation
-{
+class Precedence extends Node\Stmt\TraitUseAdaptation {
     /** @var Node\Name[] Overwritten traits */
-    public $insteadof;
+    public array $insteadof;
 
     /**
      * Constructs a trait use precedence adaptation node.
      *
-     * @param Node\Name              $trait       Trait name
-     * @param string|Node\Identifier $method      Method name
-     * @param Node\Name[]            $insteadof   Overwritten traits
-     * @param array                  $attributes  Additional attributes
+     * @param Node\Name $trait Trait name
+     * @param string|Node\Identifier $method Method name
+     * @param Node\Name[] $insteadof Overwritten traits
+     * @param array<string, mixed> $attributes Additional attributes
      */
     public function __construct(Node\Name $trait, $method, array $insteadof, array $attributes = []) {
         $this->attributes = $attributes;
@@ -29,11 +28,11 @@ class Precedence extends Node\Stmt\TraitUseAdaptation
         $this->insteadof = $insteadof;
     }
 
-    public function getSubNodeNames() : array {
+    public function getSubNodeNames(): array {
         return ['trait', 'method', 'insteadof'];
     }
-    
-    public function getType() : string {
+
+    public function getType(): string {
         return 'Stmt_TraitUseAdaptation_Precedence';
     }
 }

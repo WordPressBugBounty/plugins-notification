@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 
 namespace BracketSpace\Notification\Dependencies\React\Promise;
@@ -34,7 +34,7 @@ final class Promise implements PromiseInterface
      * @param callable(callable(T):void,callable(\Throwable):void):void $resolver
      * @param (callable(callable(T):void,callable(\Throwable):void):void)|null $canceller
      */
-    public function __construct(callable $resolver, callable $canceller = null)
+    public function __construct(callable $resolver, ?callable $canceller = null)
     {
         $this->canceller = $canceller;
 
@@ -46,7 +46,7 @@ final class Promise implements PromiseInterface
         $this->call($cb);
     }
 
-    public function then(callable $onFulfilled = null, callable $onRejected = null): PromiseInterface
+    public function then(?callable $onFulfilled = null, ?callable $onRejected = null): PromiseInterface
     {
         if (null !== $this->result) {
             return $this->result->then($onFulfilled, $onRejected);
@@ -171,7 +171,7 @@ final class Promise implements PromiseInterface
         return $this->finally($onFulfilledOrRejected);
     }
 
-    private function resolver(callable $onFulfilled = null, callable $onRejected = null): callable
+    private function resolver(?callable $onFulfilled = null, ?callable $onRejected = null): callable
     {
         return function (callable $resolve, callable $reject) use ($onFulfilled, $onRejected): void {
             $this->handlers[] = static function (PromiseInterface $promise) use ($onFulfilled, $onRejected, $resolve, $reject): void {

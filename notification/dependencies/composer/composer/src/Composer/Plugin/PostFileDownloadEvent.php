@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -64,7 +64,7 @@ class PostFileDownloadEvent extends Event
      */
     public function __construct(string $name, ?string $fileName, ?string $checksum, string $url, string $type, $context = null)
     {
-        /** @phpstan-ignore-next-line */
+        /** @phpstan-ignore instanceof.alwaysFalse, booleanAnd.alwaysFalse */
         if ($context === null && $type instanceof PackageInterface) {
             $context = $type;
             $type = 'package';

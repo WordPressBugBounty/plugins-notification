@@ -2,7 +2,7 @@
 /**
  * @license BSD-3-Clause
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 
 declare(strict_types=1);
@@ -15,19 +15,20 @@ use BracketSpace\Notification\Dependencies\PhpParser\Node;
 use BracketSpace\Notification\Dependencies\PhpParser\Node\Identifier;
 use BracketSpace\Notification\Dependencies\PhpParser\Node\Stmt;
 
-class EnumCase implements BracketSpace\Notification\Dependencies\PhpParser\Builder
-{
+class EnumCase implements BracketSpace\Notification\Dependencies\PhpParser\Builder {
+    /** @var Identifier|string */
     protected $name;
-    protected $value = null;
-    protected $attributes = [];
+    protected ?Node\Expr $value = null;
+    /** @var array<string, mixed> */
+    protected array $attributes = [];
 
-    /** @var Node\AttributeGroup[] */
-    protected $attributeGroups = [];
+    /** @var list<Node\AttributeGroup> */
+    protected array $attributeGroups = [];
 
     /**
      * Creates an enum case builder.
      *
-     * @param string|Identifier $name  Name
+     * @param string|Identifier $name Name
      */
     public function __construct($name) {
         $this->name = $name;

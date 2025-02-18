@@ -2,7 +2,7 @@
 /**
  * @license BSD-3-Clause
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 namespace BracketSpace\Notification\Dependencies\PhpParser\Builder;
@@ -10,16 +10,23 @@ namespace BracketSpace\Notification\Dependencies\PhpParser\Builder;
 use BracketSpace\Notification\Dependencies\PhpParser;
 use BracketSpace\Notification\Dependencies\PhpParser\BuilderHelpers;
 
-abstract class Declaration implements BracketSpace\Notification\Dependencies\PhpParser\Builder
-{
-    protected $attributes = [];
+abstract class Declaration implements BracketSpace\Notification\Dependencies\PhpParser\Builder {
+    /** @var array<string, mixed> */
+    protected array $attributes = [];
 
+    /**
+     * Adds a statement.
+     *
+     * @param BracketSpace\Notification\Dependencies\PhpParser\Node\Stmt|BracketSpace\Notification\Dependencies\PhpParser\Builder $stmt The statement to add
+     *
+     * @return $this The builder instance (for fluid interface)
+     */
     abstract public function addStmt($stmt);
 
     /**
      * Adds multiple statements.
      *
-     * @param array $stmts The statements to add
+     * @param (BracketSpace\Notification\Dependencies\PhpParser\Node\Stmt|BracketSpace\Notification\Dependencies\PhpParser\Builder)[] $stmts The statements to add
      *
      * @return $this The builder instance (for fluid interface)
      */

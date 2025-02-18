@@ -2,7 +2,7 @@
 /**
  * @license BSD-3-Clause
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 namespace BracketSpace\Notification\Dependencies\PhpParser\Builder;
@@ -12,10 +12,10 @@ use BracketSpace\Notification\Dependencies\PhpParser\BuilderHelpers;
 use BracketSpace\Notification\Dependencies\PhpParser\Node;
 use BracketSpace\Notification\Dependencies\PhpParser\Node\Stmt;
 
-class Namespace_ extends Declaration
-{
-    private $name;
-    private $stmts = [];
+class Namespace_ extends Declaration {
+    private ?Node\Name $name;
+    /** @var Stmt[] */
+    private array $stmts = [];
 
     /**
      * Creates a namespace builder.
@@ -44,7 +44,7 @@ class Namespace_ extends Declaration
      *
      * @return Stmt\Namespace_ The built node
      */
-    public function getNode() : Node {
+    public function getNode(): Node {
         return new Stmt\Namespace_($this->name, $this->stmts, $this->attributes);
     }
 }

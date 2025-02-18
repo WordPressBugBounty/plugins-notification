@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -41,7 +41,7 @@ class Response
      */
     public function __construct(array $request, ?int $code, array $headers, ?string $body)
     {
-        if (!isset($request['url'])) { // @phpstan-ignore-line
+        if (!isset($request['url'])) {
             throw new \LogicException('url key missing from request array');
         }
         $this->request = $request;
@@ -106,8 +106,7 @@ class Response
      */
     public function collect(): void
     {
-        /** @phpstan-ignore-next-line */
-        $this->request = $this->code = $this->headers = $this->body = null;
+        unset($this->request, $this->code, $this->headers, $this->body);
     }
 
     /**

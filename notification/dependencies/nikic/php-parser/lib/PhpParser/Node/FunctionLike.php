@@ -2,28 +2,25 @@
 /**
  * @license BSD-3-Clause
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 namespace BracketSpace\Notification\Dependencies\PhpParser\Node;
 
 use BracketSpace\Notification\Dependencies\PhpParser\Node;
 
-interface FunctionLike extends Node
-{
+interface FunctionLike extends Node {
     /**
      * Whether to return by reference
-     *
-     * @return bool
      */
-    public function returnsByRef() : bool;
+    public function returnsByRef(): bool;
 
     /**
      * List of parameters
      *
      * @return Param[]
      */
-    public function getParams() : array;
+    public function getParams(): array;
 
     /**
      * Get the declared return type or null
@@ -37,12 +34,12 @@ interface FunctionLike extends Node
      *
      * @return Stmt[]|null
      */
-    public function getStmts();
+    public function getStmts(): ?array;
 
     /**
      * Get PHP attribute groups.
      *
      * @return AttributeGroup[]
      */
-    public function getAttrGroups() : array;
+    public function getAttrGroups(): array;
 }

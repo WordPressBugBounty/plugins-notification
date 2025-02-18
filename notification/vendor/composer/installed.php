@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'bracketspace/notification',
-        'pretty_version' => '9.0.2',
-        'version' => '9.0.2.0',
-        'reference' => '5b8c4981fa268eca93873108b3e541b6e8be8870',
+        'pretty_version' => '9.0.4',
+        'version' => '9.0.4.0',
+        'reference' => '8cdd413e560ee9cfee58328f7039298538259ed8',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'bracketspace/notification' => array(
-            'pretty_version' => '9.0.2',
-            'version' => '9.0.2.0',
-            'reference' => '5b8c4981fa268eca93873108b3e541b6e8be8870',
+            'pretty_version' => '9.0.4',
+            'version' => '9.0.4.0',
+            'reference' => '8cdd413e560ee9cfee58328f7039298538259ed8',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -464,9 +464,9 @@
             'dev_requirement' => false,
         ),
         'symfony/process' => array(
-            'pretty_version' => 'v5.4.44',
-            'version' => '5.4.44.0',
-            'reference' => '1b9fa82b5c62cd49da8c9e3952dd8531ada65096',
+            'pretty_version' => 'v5.4.47',
+            'version' => '5.4.47.0',
+            'reference' => '5d1662fb32ebc94f17ddb8d635454a776066733d',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/process',
             'aliases' => array(),

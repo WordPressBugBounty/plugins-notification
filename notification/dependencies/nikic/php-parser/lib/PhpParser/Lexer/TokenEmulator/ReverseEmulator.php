@@ -2,24 +2,25 @@
 /**
  * @license BSD-3-Clause
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 namespace BracketSpace\Notification\Dependencies\PhpParser\Lexer\TokenEmulator;
 
+use BracketSpace\Notification\Dependencies\PhpParser\PhpVersion;
+
 /**
  * Reverses emulation direction of the inner emulator.
  */
-final class ReverseEmulator extends TokenEmulator
-{
+final class ReverseEmulator extends TokenEmulator {
     /** @var TokenEmulator Inner emulator */
-    private $emulator;
+    private TokenEmulator $emulator;
 
     public function __construct(TokenEmulator $emulator) {
         $this->emulator = $emulator;
     }
 
-    public function getPhpVersion(): string {
+    public function getPhpVersion(): PhpVersion {
         return $this->emulator->getPhpVersion();
     }
 

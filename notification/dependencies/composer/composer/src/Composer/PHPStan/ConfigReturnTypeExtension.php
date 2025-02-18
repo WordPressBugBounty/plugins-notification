@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -66,28 +66,26 @@ final class ConfigReturnTypeExtension implements DynamicMethodReturnTypeExtensio
         return strtolower($methodReflection->getName()) === 'get';
     }
 
-    public function getTypeFromMethodCall(MethodReflection $methodReflection, MethodCall $methodCall, Scope $scope): Type
+    public function getTypeFromMethodCall(MethodReflection $methodReflection, MethodCall $methodCall, Scope $scope): ?Type
     {
         $args = $methodCall->getArgs();
 
-        $defaultReturn = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants())->getReturnType();
-
         if (count($args) < 1) {
-            return $defaultReturn;
+            return null;
         }
 
         $keyType = $scope->getType($args[0]->value);
-        if (method_exists($keyType, 'getConstantStrings')) { // @phpstan-ignore-line - depending on PHPStan version, this method will always exist, or not.
+        if (method_exists($keyType, 'getConstantStrings')) { // @phpstan-ignore function.alreadyNarrowedType (- depending on PHPStan version, this method will always exist, or not.)
             $strings = $keyType->getConstantStrings();
         } else {
             // for compat with old phpstan versions, we use a deprecated phpstan method.
-            $strings = TypeUtils::getConstantStrings($keyType); // @phpstan-ignore-line ignore deprecation
+            $strings = TypeUtils::getConstantStrings($keyType); // @phpstan-ignore staticMethod.deprecated (ignore deprecation)
         }
         if ($strings !== []) {
             $types = [];
             foreach($strings as $string) {
                 if (!isset($this->properties[$string->getValue()])) {
-                    return $defaultReturn;
+                    return null;
                 }
                 $types[] = $this->properties[$string->getValue()];
             }
@@ -95,7 +93,7 @@ final class ConfigReturnTypeExtension implements DynamicMethodReturnTypeExtensio
             return TypeCombinator::union(...$types);
         }
 
-        return $defaultReturn;
+        return null;
     }
 
     /**

@@ -2,7 +2,7 @@
 /**
  * @license BSD-3-Clause
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 namespace BracketSpace\Notification\Dependencies\PhpParser\Builder;
@@ -12,10 +12,11 @@ use BracketSpace\Notification\Dependencies\PhpParser\BuilderHelpers;
 use BracketSpace\Notification\Dependencies\PhpParser\Node;
 use BracketSpace\Notification\Dependencies\PhpParser\Node\Stmt;
 
-class TraitUse implements Builder
-{
-    protected $traits = [];
-    protected $adaptations = [];
+class TraitUse implements Builder {
+    /** @var Node\Name[] */
+    protected array $traits = [];
+    /** @var Stmt\TraitUseAdaptation[] */
+    protected array $adaptations = [];
 
     /**
      * Creates a trait use builder.
@@ -63,7 +64,7 @@ class TraitUse implements Builder
      *
      * @return Node The built node
      */
-    public function getNode() : Node {
+    public function getNode(): Node {
         return new Stmt\TraitUse($this->traits, $this->adaptations);
     }
 }

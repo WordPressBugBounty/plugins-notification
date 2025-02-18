@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -58,7 +58,7 @@ class Cache
         $this->root = rtrim($cacheDir, '/\\') . '/';
         $this->allowlist = $allowlist;
         $this->filesystem = $filesystem ?: new Filesystem();
-        $this->readOnly = (bool) $readOnly;
+        $this->readOnly = $readOnly;
 
         if (!self::isUsable($cacheDir)) {
             $this->enabled = false;
@@ -70,7 +70,7 @@ class Cache
      */
     public function setReadOnly(bool $readOnly)
     {
-        $this->readOnly = (bool) $readOnly;
+        $this->readOnly = $readOnly;
     }
 
     /**
@@ -149,7 +149,7 @@ class Cache
 
             $this->io->writeError('Writing '.$this->root . $file.' into cache', true, IOInterface::DEBUG);
 
-            $tempFileName = $this->root . $file . uniqid('.', true) . '.tmp';
+            $tempFileName = $this->root . $file . bin2hex(random_bytes(5)) . '.tmp';
             try {
                 return file_put_contents($tempFileName, $contents) !== false && rename($tempFileName, $this->root . $file);
             } catch (\ErrorException $e) {
@@ -203,7 +203,7 @@ class Cache
                 $this->io->writeError('Writing '.$this->root . $file.' into cache from '.$source);
             }
 
-            return copy($source, $this->root . $file);
+            return $this->filesystem->copy($source, $this->root . $file);
         }
 
         return false;
@@ -229,7 +229,7 @@ class Cache
 
                 $this->io->writeError('Reading '.$this->root . $file.' from cache', true, IOInterface::DEBUG);
 
-                return copy($this->root . $file, $target);
+                return $this->filesystem->copy($this->root . $file, $target);
             }
         }
 
@@ -362,7 +362,7 @@ class Cache
         if ($this->isEnabled()) {
             $file = Preg::replace('{[^'.$this->allowlist.']}i', '-', $file);
             if (file_exists($this->root . $file)) {
-                return sha1_file($this->root . $file);
+                return hash_file('sha1', $this->root . $file);
             }
         }
 

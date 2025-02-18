@@ -2,7 +2,7 @@
 /**
  * @license BSD-3-Clause
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 namespace BracketSpace\Notification\Dependencies\PhpParser\Builder;
@@ -10,13 +10,13 @@ namespace BracketSpace\Notification\Dependencies\PhpParser\Builder;
 use BracketSpace\Notification\Dependencies\PhpParser\BuilderHelpers;
 use BracketSpace\Notification\Dependencies\PhpParser\Node;
 
-abstract class FunctionLike extends Declaration
-{
-    protected $returnByRef = false;
-    protected $params = [];
+abstract class FunctionLike extends Declaration {
+    protected bool $returnByRef = false;
+    /** @var Node\Param[] */
+    protected array $params = [];
 
-    /** @var string|Node\Name|Node\NullableType|null */
-    protected $returnType = null;
+    /** @var Node\Identifier|Node\Name|Node\ComplexType|null */
+    protected ?Node $returnType = null;
 
     /**
      * Make the function return by reference.
@@ -51,7 +51,7 @@ abstract class FunctionLike extends Declaration
     /**
      * Adds multiple parameters.
      *
-     * @param array $params The parameters to add
+     * @param (Node\Param|Param)[] $params The parameters to add
      *
      * @return $this The builder instance (for fluid interface)
      */

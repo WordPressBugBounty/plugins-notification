@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 
 namespace BracketSpace\Notification\Dependencies\JsonSchema;
@@ -22,8 +22,8 @@ class SchemaStorage implements SchemaStorageInterface
     protected $schemas = array();
 
     public function __construct(
-        UriRetrieverInterface $uriRetriever = null,
-        UriResolverInterface $uriResolver = null
+        ?UriRetrieverInterface $uriRetriever = null,
+        ?UriResolverInterface $uriResolver = null
     ) {
         $this->uriRetriever = $uriRetriever ?: new UriRetriever();
         $this->uriResolver = $uriResolver ?: new UriResolver();

@@ -2,7 +2,7 @@
 /**
  * @license BSD-3-Clause
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 namespace BracketSpace\Notification\Dependencies\PhpParser\Node\Expr;
@@ -24,12 +24,8 @@ abstract class CallLike extends Expr {
      * Returns whether this call expression is actually a first class callable.
      */
     public function isFirstClassCallable(): bool {
-        foreach ($this->getRawArgs() as $arg) {
-            if ($arg instanceof VariadicPlaceholder) {
-                return true;
-            }
-        }
-        return false;
+        $rawArgs = $this->getRawArgs();
+        return count($rawArgs) === 1 && current($rawArgs) instanceof VariadicPlaceholder;
     }
 
     /**

@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 
 namespace BracketSpace\Notification\Dependencies\Symfony\Component\Console\Completion;
@@ -55,7 +55,7 @@ final class CompletionInput extends ArgvInput
      * Create an input based on an COMP_WORDS token list.
      *
      * @param string[] $tokens       the set of split tokens (e.g. COMP_WORDS or argv)
-     * @param          $currentIndex the index of the cursor (e.g. COMP_CWORD)
+     * @param int      $currentIndex the index of the cursor (e.g. COMP_CWORD)
      */
     public static function fromTokens(array $tokens, int $currentIndex): self
     {

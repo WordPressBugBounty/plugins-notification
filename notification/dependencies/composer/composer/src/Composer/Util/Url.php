@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -80,7 +80,7 @@ class Url
             $origin .= ':'.$port;
         }
 
-        if (strpos($origin, '.github.com') === (strlen($origin) - 11)) {
+        if (str_ends_with($origin, '.github.com') && $origin !== 'codeload.github.com') {
             return 'github.com';
         }
 
@@ -115,7 +115,6 @@ class Url
         $url = Preg::replace('{([&?]access_token=)[^&]+}', '$1***', $url);
 
         $url = Preg::replaceCallback('{^(?P<prefix>[a-z0-9]+://)?(?P<user>[^:/\s@]+):(?P<password>[^@\s/]+)@}i', static function ($m): string {
-            assert(is_string($m['user']));
             // if the username looks like a long (12char+) hex string, or a modern github token (e.g. ghp_xxx) we obfuscate that
             if (Preg::isMatch('{^([a-f0-9]{12,}|gh[a-z]_[a-zA-Z0-9_]+|github_pat_[a-zA-Z0-9_]+)$}', $m['user'])) {
                 return $m['prefix'].'***:***@';

@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 
 namespace BracketSpace\Notification\Dependencies\React\Promise\Internal;
@@ -39,7 +39,7 @@ final class FulfilledPromise implements PromiseInterface
      * @param ?(callable((T is void ? null : T)): (PromiseInterface<TFulfilled>|TFulfilled)) $onFulfilled
      * @return PromiseInterface<($onFulfilled is null ? T : TFulfilled)>
      */
-    public function then(callable $onFulfilled = null, callable $onRejected = null): PromiseInterface
+    public function then(?callable $onFulfilled = null, ?callable $onRejected = null): PromiseInterface
     {
         if (null === $onFulfilled) {
             return $this;

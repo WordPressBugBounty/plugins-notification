@@ -2,7 +2,7 @@
 /**
  * @license BSD-3-Clause
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 
 declare(strict_types=1);
@@ -11,27 +11,29 @@ namespace BracketSpace\Notification\Dependencies\PhpParser\Builder;
 
 use BracketSpace\Notification\Dependencies\PhpParser;
 use BracketSpace\Notification\Dependencies\PhpParser\BuilderHelpers;
+use BracketSpace\Notification\Dependencies\PhpParser\Modifiers;
 use BracketSpace\Notification\Dependencies\PhpParser\Node;
 use BracketSpace\Notification\Dependencies\PhpParser\Node\Const_;
 use BracketSpace\Notification\Dependencies\PhpParser\Node\Identifier;
 use BracketSpace\Notification\Dependencies\PhpParser\Node\Stmt;
 
-class ClassConst implements BracketSpace\Notification\Dependencies\PhpParser\Builder
-{
-    protected $flags = 0;
-    protected $attributes = [];
-    protected $constants = [];
+class ClassConst implements BracketSpace\Notification\Dependencies\PhpParser\Builder {
+    protected int $flags = 0;
+    /** @var array<string, mixed> */
+    protected array $attributes = [];
+    /** @var list<Const_> */
+    protected array $constants = [];
 
-    /** @var Node\AttributeGroup[] */
-    protected $attributeGroups = [];
-    /** @var Identifier|Node\Name|Node\ComplexType */
-    protected $type;
+    /** @var list<Node\AttributeGroup> */
+    protected array $attributeGroups = [];
+    /** @var Identifier|Node\Name|Node\ComplexType|null */
+    protected ?Node $type = null;
 
     /**
      * Creates a class constant builder
      *
-     * @param string|Identifier                          $name  Name
-     * @param Node\Expr|bool|null|int|float|string|array $value Value
+     * @param string|Identifier $name Name
+     * @param Node\Expr|bool|null|int|float|string|array|\UnitEnum $value Value
      */
     public function __construct($name, $value) {
         $this->constants = [new Const_($name, BuilderHelpers::normalizeValue($value))];
@@ -40,8 +42,8 @@ class ClassConst implements BracketSpace\Notification\Dependencies\PhpParser\Bui
     /**
      * Add another constant to const group
      *
-     * @param string|Identifier                          $name  Name
-     * @param Node\Expr|bool|null|int|float|string|array $value Value
+     * @param string|Identifier $name Name
+     * @param Node\Expr|bool|null|int|float|string|array|\UnitEnum $value Value
      *
      * @return $this The builder instance (for fluid interface)
      */
@@ -57,7 +59,7 @@ class ClassConst implements BracketSpace\Notification\Dependencies\PhpParser\Bui
      * @return $this The builder instance (for fluid interface)
      */
     public function makePublic() {
-        $this->flags = BuilderHelpers::addModifier($this->flags, Stmt\Class_::MODIFIER_PUBLIC);
+        $this->flags = BuilderHelpers::addModifier($this->flags, Modifiers::PUBLIC);
 
         return $this;
     }
@@ -68,7 +70,7 @@ class ClassConst implements BracketSpace\Notification\Dependencies\PhpParser\Bui
      * @return $this The builder instance (for fluid interface)
      */
     public function makeProtected() {
-        $this->flags = BuilderHelpers::addModifier($this->flags, Stmt\Class_::MODIFIER_PROTECTED);
+        $this->flags = BuilderHelpers::addModifier($this->flags, Modifiers::PROTECTED);
 
         return $this;
     }
@@ -79,7 +81,7 @@ class ClassConst implements BracketSpace\Notification\Dependencies\PhpParser\Bui
      * @return $this The builder instance (for fluid interface)
      */
     public function makePrivate() {
-        $this->flags = BuilderHelpers::addModifier($this->flags, Stmt\Class_::MODIFIER_PRIVATE);
+        $this->flags = BuilderHelpers::addModifier($this->flags, Modifiers::PRIVATE);
 
         return $this;
     }
@@ -90,7 +92,7 @@ class ClassConst implements BracketSpace\Notification\Dependencies\PhpParser\Bui
      * @return $this The builder instance (for fluid interface)
      */
     public function makeFinal() {
-        $this->flags = BuilderHelpers::addModifier($this->flags, Stmt\Class_::MODIFIER_FINAL);
+        $this->flags = BuilderHelpers::addModifier($this->flags, Modifiers::FINAL);
 
         return $this;
     }

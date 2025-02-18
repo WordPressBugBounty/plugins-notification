@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -45,14 +45,21 @@ abstract class BasePackage implements PackageInterface
     public const STABILITY_ALPHA = 15;
     public const STABILITY_DEV = 20;
 
-    /** @var array<string, self::STABILITY_*> */
-    public static $stabilities = [
+    public const STABILITIES = [
         'stable' => self::STABILITY_STABLE,
         'RC' => self::STABILITY_RC,
         'beta' => self::STABILITY_BETA,
         'alpha' => self::STABILITY_ALPHA,
         'dev' => self::STABILITY_DEV,
     ];
+
+    /**
+     * @deprecated
+     * @readonly
+     * @var array<key-of<BasePackage::STABILITIES>, self::STABILITY_*>
+     * @phpstan-ignore property.readOnlyByPhpDocDefaultValue
+     */
+    public static $stabilities = self::STABILITIES;
 
     /**
      * READ-ONLY: The package id, public for fast access in dependency solver
@@ -239,7 +246,7 @@ abstract class BasePackage implements PackageInterface
      */
     public function getStabilityPriority(): int
     {
-        return self::$stabilities[$this->getStability()];
+        return self::STABILITIES[$this->getStability()];
     }
 
     public function __clone()

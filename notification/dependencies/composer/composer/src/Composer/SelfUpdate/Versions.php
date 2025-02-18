@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -94,7 +94,7 @@ class Versions
         $versions = $this->getVersionsData();
 
         foreach ($versions[$channel ?: $this->getChannel()] as $version) {
-            if ($version['min-php'] <= PHP_VERSION_ID) {
+            if ($version['min-php'] <= \PHP_VERSION_ID) {
                 return $version;
             }
         }

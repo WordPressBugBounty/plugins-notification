@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -17,6 +17,7 @@
 
 namespace BracketSpace\Notification\Dependencies\Composer\Command;
 
+use BracketSpace\Notification\Dependencies\Composer\IO\IOInterface;
 use BracketSpace\Notification\Dependencies\Composer\Package\AliasPackage;
 use BracketSpace\Notification\Dependencies\Composer\Package\BasePackage;
 use BracketSpace\Notification\Dependencies\Composer\Package\Locker;
@@ -77,9 +78,28 @@ EOT
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        return $this->doBump(
+            $this->getIO(),
+            $input->getOption('dev-only'),
+            $input->getOption('no-dev-only'),
+            $input->getOption('dry-run'),
+            $input->getArgument('packages')
+        );
+    }
+
+    /**
+     * @param string[] $packagesFilter
+     * @throws \BracketSpace\Notification\Dependencies\Seld\JsonLint\ParsingException
+     */
+    public function doBump(
+        IOInterface $io,
+        bool $devOnly,
+        bool $noDevOnly,
+        bool $dryRun,
+        array $packagesFilter
+    ): int {
         /** @readonly */
         $composerJsonPath = Factory::getComposerFile();
-        $io = $this->getIO();
 
         if (!Filesystem::isReadable($composerJsonPath)) {
             $io->writeError('<error>'.$composerJsonPath.' is not readable.</error>');
@@ -117,7 +137,7 @@ EOT
             $repo = $composer->getRepositoryManager()->getLocalRepository();
         }
 
-        if ($composer->getPackage()->getType() !== 'project' && !$input->getOption('dev-only')) {
+        if ($composer->getPackage()->getType() !== 'project' && !$devOnly) {
             $io->writeError('<warning>Warning: Bumping dependency constraints is not recommended for libraries as it will narrow down your dependencies and may cause problems for your users.</warning>');
 
             $contents = $composerJson->read();
@@ -130,14 +150,13 @@ EOT
 
         $bumper = new VersionBumper();
         $tasks = [];
-        if (!$input->getOption('dev-only')) {
+        if (!$devOnly) {
             $tasks['require'] = $composer->getPackage()->getRequires();
         }
-        if (!$input->getOption('no-dev-only')) {
+        if (!$noDevOnly) {
             $tasks['require-dev'] = $composer->getPackage()->getDevRequires();
         }
 
-        $packagesFilter = $input->getArgument('packages');
         if (count($packagesFilter) > 0) {
             $pattern = BasePackage::packageNamesToRegexp(array_unique(array_map('strtolower', $packagesFilter)));
             foreach ($tasks as $key => $reqs) {
@@ -175,8 +194,6 @@ EOT
                 $updates[$key][$pkgName] = $bumped;
             }
         }
-
-        $dryRun = $input->getOption('dry-run');
 
         if (!$dryRun && !$this->updateFileCleanly($composerJson, $updates)) {
             $composerDefinition = $composerJson->read();

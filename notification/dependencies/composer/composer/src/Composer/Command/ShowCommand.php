@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -48,6 +48,7 @@ use BracketSpace\Notification\Dependencies\Composer\Semver\Constraint\Constraint
 use BracketSpace\Notification\Dependencies\Composer\Semver\Semver;
 use BracketSpace\Notification\Dependencies\Composer\Spdx\SpdxLicenses;
 use BracketSpace\Notification\Dependencies\Composer\Util\PackageInfo;
+use DateTimeInterface;
 use BracketSpace\Notification\Dependencies\Symfony\Component\Console\Completion\CompletionInput;
 use BracketSpace\Notification\Dependencies\Symfony\Component\Console\Formatter\OutputFormatter;
 use BracketSpace\Notification\Dependencies\Symfony\Component\Console\Formatter\OutputFormatterStyle;
@@ -498,7 +499,7 @@ EOT
                 $writeVersion = !$input->getOption('name-only') && !$input->getOption('path') && $showVersion;
                 $writeLatest = $writeVersion && $showLatest;
                 $writeDescription = !$input->getOption('name-only') && !$input->getOption('path');
-                $writeReleaseDate = $writeLatest && $input->getOption('sort-by-age');
+                $writeReleaseDate = $writeLatest && ($input->getOption('sort-by-age') || $format === 'json');
 
                 $hasOutdatedPackages = false;
 
@@ -540,10 +541,13 @@ EOT
                             $packageViewData['homepage'] = $package instanceof CompletePackageInterface ? $package->getHomepage() : null;
                             $packageViewData['source'] = PackageInfo::getViewSourceUrl($package);
                         }
-                        $nameLength = max($nameLength, strlen($package->getPrettyName()));
+                        $nameLength = max($nameLength, strlen($packageViewData['name']));
                         if ($writeVersion) {
                             $packageViewData['version'] = $package->getFullPrettyVersion();
-                            $versionLength = max($versionLength, strlen($package->getFullPrettyVersion()));
+                            if ($format === 'text') {
+                                $packageViewData['version'] = ltrim($packageViewData['version'], 'v');
+                            }
+                            $versionLength = max($versionLength, strlen($packageViewData['version']));
                         }
                         if ($writeReleaseDate) {
                             if ($package->getReleaseDate() !== null) {
@@ -552,14 +556,25 @@ EOT
                                     $packageViewData['release-age'] = 'from '.$packageViewData['release-age'];
                                 }
                                 $releaseDateLength = max($releaseDateLength, strlen($packageViewData['release-age']));
+                                $packageViewData['release-date'] = $package->getReleaseDate()->format(DateTimeInterface::ATOM);
                             } else {
                                 $packageViewData['release-age'] = '';
+                                $packageViewData['release-date'] = '';
                             }
                         }
                         if ($writeLatest && $latestPackage) {
                             $packageViewData['latest'] = $latestPackage->getFullPrettyVersion();
+                            if ($format === 'text') {
+                                $packageViewData['latest'] = ltrim($packageViewData['latest'], 'v');
+                            }
                             $packageViewData['latest-status'] = $this->getUpdateStatus($latestPackage, $package);
                             $latestLength = max($latestLength, strlen($packageViewData['latest']));
+
+                            if ($latestPackage->getReleaseDate() !== null) {
+                                $packageViewData['latest-release-date'] = $latestPackage->getReleaseDate()->format(DateTimeInterface::ATOM);
+                            } else {
+                                $packageViewData['latest-release-date'] = '';
+                            }
                         } elseif ($writeLatest) {
                             $packageViewData['latest'] = '[none matched]';
                             $packageViewData['latest-status'] = 'up-to-date';
@@ -807,7 +822,8 @@ EOT
             $pool = $repositorySet->createPoolForPackage($name);
         }
         $matches = $pool->whatProvides($name, $constraint);
-        foreach ($matches as $index => $package) {
+        $literals = [];
+        foreach ($matches as $package) {
             // avoid showing the 9999999-dev alias if the default branch has no branch-alias set
             if ($package instanceof AliasPackage && $package->getVersion() === VersionParser::DEFAULT_BRANCH_ALIAS) {
                 $package = $package->getAliasOf();
@@ -819,11 +835,12 @@ EOT
             }
 
             $versions[$package->getPrettyVersion()] = $package->getVersion();
-            $matches[$index] = $package->getId();
+            $literals[] = $package->getId();
         }
 
         // select preferred package according to policy rules
-        if (null === $matchedPackage && $matches && $preferred = $policy->selectPreferredPackages($pool, $matches)) {
+        if (null === $matchedPackage && \count($literals) > 0) {
+            $preferred = $policy->selectPreferredPackages($pool, $literals);
             $matchedPackage = $pool->literalToPackage($preferred[0]);
         }
 
@@ -1453,7 +1470,7 @@ EOT
         $stability = $composer->getPackage()->getMinimumStability();
         $flags = $composer->getPackage()->getStabilityFlags();
         if (isset($flags[$name])) {
-            $stability = array_search($flags[$name], BasePackage::$stabilities, true);
+            $stability = array_search($flags[$name], BasePackage::STABILITIES, true);
         }
 
         $bestStability = $stability;

@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -141,7 +141,7 @@ class Comparer
                             return false;
                         }
                     } elseif (is_file($dir.'/'.$file) && filesize($dir.'/'.$file)) {
-                        $array[$dir][$file] = md5_file($dir.'/'.$file);
+                        $array[$dir][$file] = hash_file(\PHP_VERSION_ID > 80100 ? 'xxh3' : 'sha1', $dir.'/'.$file);
                     }
                 }
             }

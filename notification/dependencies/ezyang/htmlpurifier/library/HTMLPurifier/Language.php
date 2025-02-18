@@ -5,7 +5,7 @@
  * other functions, as well as the localized messages for HTML Purifier.
  *
  * @license LGPL-2.1-or-later
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 class BracketSpace_Notification_Dependencies_HTMLPurifier_Language
 {
@@ -36,7 +36,7 @@ class BracketSpace_Notification_Dependencies_HTMLPurifier_Language
 
     /**
      * True if no message file was found for this language, so English
-     * is being used BracketSpace_Notification_Dependencies_instead. Check this if you'd like to notify the
+     * is being used instead. Check this if you'd like to notify the
      * user that they've used a non-supported language.
      * @type bool
      */

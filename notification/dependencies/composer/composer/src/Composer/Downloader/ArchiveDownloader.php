@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -73,7 +73,7 @@ abstract class ArchiveDownloader extends FileDownloader
         }
 
         do {
-            $temporaryDir = $vendorDir.'/composer/'.substr(md5(uniqid('', true)), 0, 8);
+            $temporaryDir = $vendorDir.'/composer/'.bin2hex(random_bytes(4));
         } while (is_dir($temporaryDir));
 
         $this->addCleanupPath($package, $temporaryDir);

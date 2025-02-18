@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -50,7 +50,13 @@ EOT
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $config = Factory::createConfig();
+        $composer = $this->tryComposer();
+        if ($composer !== null) {
+            $config = $composer->getConfig();
+        } else {
+            $config = Factory::createConfig();
+        }
+
         $io = $this->getIO();
 
         $cachePaths = [

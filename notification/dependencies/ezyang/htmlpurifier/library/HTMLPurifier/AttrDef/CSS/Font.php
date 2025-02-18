@@ -4,7 +4,7 @@
  * Validates shorthand CSS property font.
  *
  * @license LGPL-2.1-or-later
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 class BracketSpace_Notification_Dependencies_HTMLPurifier_AttrDef_CSS_Font extends BracketSpace_Notification_Dependencies_HTMLPurifier_AttrDef
 {
@@ -13,7 +13,7 @@ class BracketSpace_Notification_Dependencies_HTMLPurifier_AttrDef_CSS_Font exten
      * Local copy of validators
      * @type BracketSpace_Notification_Dependencies_HTMLPurifier_AttrDef[]
      * @note If we moved specific CSS property definitions to their own
-     *       classes BracketSpace_Notification_Dependencies_instead of having them be assembled at run time by
+     *       classes instead of having them be assembled at run time by
      *       CSSDefinition, this wouldn't be necessary.  We'd instantiate
      *       our own copies.
      */

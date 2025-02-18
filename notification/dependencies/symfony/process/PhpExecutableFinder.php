@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 
 namespace BracketSpace\Notification\Dependencies\Symfony\Component\Process;
@@ -36,15 +36,8 @@ class PhpExecutableFinder
     public function find(bool $includeArgs = true)
     {
         if ($php = getenv('PHP_BINARY')) {
-            if (!is_executable($php)) {
-                $command = '\\' === \DIRECTORY_SEPARATOR ? 'where' : 'command -v --';
-                if ($php = strtok(exec($command.' '.escapeshellarg($php)), \PHP_EOL)) {
-                    if (!is_executable($php)) {
-                        return false;
-                    }
-                } else {
-                    return false;
-                }
+            if (!is_executable($php) && !$php = $this->executableFinder->find($php)) {
+                return false;
             }
 
             if (@is_dir($php)) {

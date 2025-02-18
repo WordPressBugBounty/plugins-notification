@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -21,6 +21,7 @@ use BracketSpace\Notification\Dependencies\Composer\Factory;
 use BracketSpace\Notification\Dependencies\Composer\Filter\PlatformRequirementFilter\IgnoreAllPlatformRequirementFilter;
 use BracketSpace\Notification\Dependencies\Composer\Filter\PlatformRequirementFilter\PlatformRequirementFilterFactory;
 use BracketSpace\Notification\Dependencies\Composer\IO\IOInterface;
+use BracketSpace\Notification\Dependencies\Composer\Package\BasePackage;
 use BracketSpace\Notification\Dependencies\Composer\Package\CompletePackageInterface;
 use BracketSpace\Notification\Dependencies\Composer\Package\PackageInterface;
 use BracketSpace\Notification\Dependencies\Composer\Package\Version\VersionParser;
@@ -57,6 +58,9 @@ trait PackageDiscoveryTrait
         return $this->repos;
     }
 
+    /**
+     * @param key-of<BasePackage::STABILITIES>|null $minimumStability
+     */
     private function getRepositorySet(InputInterface $input, ?string $minimumStability = null): RepositorySet
     {
         $key = $minimumStability ?? 'default';
@@ -69,6 +73,9 @@ trait PackageDiscoveryTrait
         return $this->repositorySets[$key];
     }
 
+    /**
+     * @return key-of<BasePackage::STABILITIES>
+     */
     private function getMinimumStability(InputInterface $input): string
     {
         if ($input->hasOption('stability')) { // @phpstan-ignore-line as InitCommand does have this option but not all classes using this trait do
@@ -101,7 +108,7 @@ trait PackageDiscoveryTrait
 
             foreach ($requires as $requirement) {
                 if (isset($requirement['version']) && Preg::isMatch('{^\d+(\.\d+)?$}', $requirement['version'])) {
-                    $io->writeError('<warning>The "'.$requirement['version'].'" constraint for "'.$requirement['name'].'" appears too strict and will likely not match what you want. See https://getcomposer.org/constraints');
+                    $io->writeError('<warning>The "'.$requirement['version'].'" constraint for "'.$requirement['name'].'" appears too strict and will likely not match what you want. See https://getcomposer.org/constraints</warning>');
                 }
 
                 if (!isset($requirement['version'])) {

@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -184,7 +184,7 @@ class RuleSet implements \IteratorAggregate, \Countable
         foreach ($this->rules as $type => $rules) {
             $string .= str_pad(self::TYPES[$type], 8, ' ') . ": ";
             foreach ($rules as $rule) {
-                $string .= ($repositorySet && $request && $pool ? $rule->getPrettyString($repositorySet, $request, $pool, $isVerbose) : $rule)."\n";
+                $string .= ($repositorySet !== null && $request !== null && $pool !== null ? $rule->getPrettyString($repositorySet, $request, $pool, $isVerbose) : $rule)."\n";
             }
             $string .= "\n\n";
         }

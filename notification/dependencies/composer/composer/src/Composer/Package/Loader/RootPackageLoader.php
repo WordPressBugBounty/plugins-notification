@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -93,7 +93,7 @@ class RootPackageLoader extends ArrayLoader
 
             // override with env var if available
             if (Platform::getEnv('COMPOSER_ROOT_VERSION')) {
-                $config['version'] = Platform::getEnv('COMPOSER_ROOT_VERSION');
+                $config['version'] = $this->versionGuesser->getRootVersionFromEnv();
             } else {
                 $versionData = $this->versionGuesser->guessVersion($config, $cwd ?? Platform::getCwd(true));
                 if ($versionData) {
@@ -104,7 +104,7 @@ class RootPackageLoader extends ArrayLoader
             }
 
             if (!isset($config['version'])) {
-                if ($this->io !== null && $config['name'] !== '__root__') {
+                if ($this->io !== null && $config['name'] !== '__root__' && 'project' !== ($config['type'] ?? '')) {
                     $this->io->warning(
                         sprintf(
                             "Composer could not detect the root package (%s) version, defaulting to '1.0.0'. See https://getcomposer.org/root-version",
@@ -232,6 +232,7 @@ class RootPackageLoader extends ArrayLoader
      *
      * @param array<string, string> $requires
      * @param array<string, int>    $stabilityFlags
+     * @param key-of<BasePackage::STABILITIES> $minimumStability
      *
      * @return array<string, int>
      *
@@ -240,8 +241,7 @@ class RootPackageLoader extends ArrayLoader
      */
     public static function extractStabilityFlags(array $requires, string $minimumStability, array $stabilityFlags): array
     {
-        $stabilities = BasePackage::$stabilities;
-        /** @var int $minimumStability */
+        $stabilities = BasePackage::STABILITIES;
         $minimumStability = $stabilities[$minimumStability];
         foreach ($requires as $reqName => $reqVersion) {
             $constraints = [];

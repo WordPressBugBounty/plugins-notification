@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -101,10 +101,12 @@ class ArchiveManager
 
         $sourceReference = $package->getSourceReference();
         if (null !== $sourceReference) {
-            $parts['source_reference'] = substr(sha1($sourceReference), 0, 6);
+            $parts['source_reference'] = substr(hash('sha1', $sourceReference), 0, 6);
         }
 
-        $parts = array_filter($parts);
+        $parts = array_filter($parts, function (?string $part) {
+            return $part !== null;
+        });
         foreach ($parts as $key => $part) {
             $parts[$key] = str_replace('/', '-', $part);
         }
@@ -174,7 +176,7 @@ class ArchiveManager
             $sourcePath = realpath('.');
         } else {
             // Directory used to download the sources
-            $sourcePath = sys_get_temp_dir().'/composer_archive'.uniqid();
+            $sourcePath = sys_get_temp_dir().'/composer_archive'.bin2hex(random_bytes(5));
             $filesystem->ensureDirectoryExists($sourcePath);
 
             try {
@@ -219,7 +221,7 @@ class ArchiveManager
         }
 
         // Create the archive
-        $tempTarget = sys_get_temp_dir().'/composer_archive'.uniqid().'.'.$format;
+        $tempTarget = sys_get_temp_dir().'/composer_archive'.bin2hex(random_bytes(5)).'.'.$format;
         $filesystem->ensureDirectoryExists(dirname($tempTarget));
 
         $archivePath = $usableArchiver->archive(

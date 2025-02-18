@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -69,8 +69,6 @@ class RemoteFilesystem
     private $redirects;
     /** @var int */
     private $maxRedirects = 20;
-    /** @var ProxyManager */
-    private $proxyManager;
 
     /**
      * Constructor.
@@ -96,7 +94,6 @@ class RemoteFilesystem
         $this->options = array_replace_recursive($this->options, $options);
         $this->config = $config;
         $this->authHelper = $authHelper ?? new AuthHelper($io, $config);
-        $this->proxyManager = ProxyManager::getInstance();
     }
 
     /**
@@ -254,6 +251,10 @@ class RemoteFilesystem
 
         $origFileUrl = $fileUrl;
 
+        if (isset($options['prevent_ip_access_callable'])) {
+            throw new \RuntimeException("RemoteFilesystem doesn't support the 'prevent_ip_access_callable' config.");
+        }
+
         if (isset($options['gitlab-token'])) {
             $fileUrl .= (false === strpos($fileUrl, '?') ? '?' : '&') . 'access_token='.$options['gitlab-token'];
             unset($options['gitlab-token']);
@@ -277,8 +278,8 @@ class RemoteFilesystem
 
         $ctx = StreamContextFactory::getContext($fileUrl, $options, ['notification' => [$this, 'callbackGet']]);
 
-        $proxy = $this->proxyManager->getProxyForRequest($fileUrl);
-        $usingProxy = $proxy->getFormattedUrl(' using proxy (%s)');
+        $proxy = ProxyManager::getInstance()->getProxyForRequest($fileUrl);
+        $usingProxy = $proxy->getStatus(' using proxy (%s)');
         $this->io->writeError((strpos($origFileUrl, 'http') === 0 ? 'Downloading ' : 'Reading ') . Url::sanitize($origFileUrl) . $usingProxy, true, IOInterface::DEBUG);
         unset($origFileUrl, $proxy, $usingProxy);
 
@@ -537,7 +538,12 @@ class RemoteFilesystem
         }
 
         // https://www.php.net/manual/en/reserved.variables.httpresponseheader.php
-        $responseHeaders = $http_response_header ?? [];
+        if (\PHP_VERSION_ID >= 80400) {
+            $responseHeaders = http_get_last_response_headers();
+            http_clear_last_response_headers();
+        } else {
+            $responseHeaders = $http_response_header ?? [];
+        }
 
         if (null !== $e) {
             throw $e;

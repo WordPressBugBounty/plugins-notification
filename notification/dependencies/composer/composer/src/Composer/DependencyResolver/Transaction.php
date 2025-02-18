@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -128,7 +128,7 @@ class Transaction
         $visited = [];
         $processed = [];
 
-        while (!empty($stack)) {
+        while (\count($stack) > 0) {
             $package = array_pop($stack);
 
             if (isset($processed[spl_object_hash($package)])) {
@@ -288,17 +288,18 @@ class Transaction
                 continue;
             }
 
-            $isDownloadsModifyingPlugin = $package->getType() === 'composer-plugin' && ($extra = $package->getExtra()) && isset($extra['plugin-modifies-downloads']) && $extra['plugin-modifies-downloads'] === true;
+            $extra = $package->getExtra();
+            $isDownloadsModifyingPlugin = $package->getType() === 'composer-plugin' && isset($extra['plugin-modifies-downloads']) && $extra['plugin-modifies-downloads'] === true;
 
             // is this a downloads modifying plugin or a dependency of one?
-            if ($isDownloadsModifyingPlugin || count(array_intersect($package->getNames(), $dlModifyingPluginRequires))) {
+            if ($isDownloadsModifyingPlugin || \count(array_intersect($package->getNames(), $dlModifyingPluginRequires)) > 0) {
                 // get the package's requires, but filter out any platform requirements
                 $requires = array_filter(array_keys($package->getRequires()), static function ($req): bool {
                     return !PlatformRepository::isPlatformPackage($req);
                 });
 
                 // is this a plugin with no meaningful dependencies?
-                if ($isDownloadsModifyingPlugin && !count($requires)) {
+                if ($isDownloadsModifyingPlugin && 0 === \count($requires)) {
                     // plugins with no dependencies go to the very front
                     array_unshift($dlModifyingPluginsNoDeps, $op);
                 } else {
@@ -316,14 +317,14 @@ class Transaction
             $isPlugin = $package->getType() === 'composer-plugin' || $package->getType() === 'composer-installer';
 
             // is this a plugin or a dependency of a plugin?
-            if ($isPlugin || count(array_intersect($package->getNames(), $pluginRequires))) {
+            if ($isPlugin || \count(array_intersect($package->getNames(), $pluginRequires)) > 0) {
                 // get the package's requires, but filter out any platform requirements
                 $requires = array_filter(array_keys($package->getRequires()), static function ($req): bool {
                     return !PlatformRepository::isPlatformPackage($req);
                 });
 
                 // is this a plugin with no meaningful dependencies?
-                if ($isPlugin && !count($requires)) {
+                if ($isPlugin && 0 === \count($requires)) {
                     // plugins with no dependencies go to the very front
                     array_unshift($pluginsNoDeps, $op);
                 } else {

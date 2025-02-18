@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by bracketspace on 02-October-2024 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */ declare(strict_types=1);
 
 /*
@@ -186,6 +186,8 @@ interface PackageInterface
     /**
      * Returns the sha1 checksum for the distribution archive of this version
      *
+     * Can be an empty string which should be treated as null
+     *
      * @return ?string
      */
     public function getDistSha1Checksum(): ?string;
@@ -325,6 +327,13 @@ interface PackageInterface
      * @return string[]
      */
     public function getIncludePaths(): array;
+
+    /**
+     * Returns the settings for php extension packages
+     *
+     * @return array{extension-name?: string, priority?: int, support-zts?: bool, support-nts?: bool, configure-options?: list<array{name: string, description?: string}>}|null
+     */
+    public function getPhpExt(): ?array;
 
     /**
      * Stores a reference to the repository that owns the package
