@@ -51,7 +51,7 @@ class Runtime
 	/**
 	 * Components
 	 *
-	 * @var array<class-string,mixed>
+	 * @var array<class-string,object>
 	 */
 	protected $components = [];
 
@@ -201,7 +201,7 @@ class Runtime
 	 * @since 7.0.0
 	 * @since 9.0.0 Components are referenced by FQCN.
 	 * @param string $name Component name.
-	 * @return mixed       Component or null
+	 * @return object|null Component or null
 	 */
 	public function component($name)
 	{
@@ -274,6 +274,12 @@ class Runtime
 		$this->addComponent(new Api\Api());
 		$this->addComponent(new Compat\WebhookCompat());
 		$this->addComponent(new Compat\RestApiCompat());
+
+		$this->addComponent(new Repository\Converter\JsonConverter());
+		$this->addComponent(new Repository\Converter\ArrayConverter());
+
+		// Defaults
+		$this->addComponent(new Repository\Carrier\Email());
 	}
 
 	/**
@@ -313,7 +319,6 @@ class Runtime
 				'carriers',
 				'recipients',
 				'triggers',
-				'converters',
 			],
 			[
 				Repository\GlobalMergeTagRepository::class,
@@ -321,7 +326,6 @@ class Runtime
 				Repository\CarrierRepository::class,
 				Repository\RecipientRepository::class,
 				Repository\TriggerRepository::class,
-				Repository\ConverterRepository::class,
 			]
 		);
 	}

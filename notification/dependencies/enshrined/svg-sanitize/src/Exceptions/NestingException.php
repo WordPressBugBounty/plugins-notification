@@ -2,7 +2,7 @@
 /**
  * @license GPL-2.0-or-later
  *
- * Modified by bracketspace on 17-February-2025 using {@see https://github.com/BrianHenryIE/strauss}.
+ * Modified by bracketspace on 05-September-2025 using {@see https://github.com/BrianHenryIE/strauss}.
  */
 namespace BracketSpace\Notification\Dependencies\enshrined\svgSanitize\Exceptions;
 
@@ -23,7 +23,7 @@ class NestingException extends \Exception
      * @param Exception|null   $previous
      * @param \DOMElement|null $element
      */
-    public function __construct($message = "", $code = 0, Exception $previous = null, \DOMElement $element = null)
+    public function __construct($message = "", $code = 0, ?Exception $previous = null, ?\DOMElement $element = null)
     {
         $this->element = $element;
         parent::__construct($message, $code, $previous);
