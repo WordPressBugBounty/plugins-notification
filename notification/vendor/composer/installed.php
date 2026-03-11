@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'bracketspace/notification',
-        'pretty_version' => '9.0.9',
-        'version' => '9.0.9.0',
-        'reference' => 'c0c2c965b8d51b2530a2892768981315cd61833c',
+        'pretty_version' => '9.0.10',
+        'version' => '9.0.10.0',
+        'reference' => 'f828b8b5e2058551c90d5506e4008dc249538efa',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'bracketspace/notification' => array(
-            'pretty_version' => '9.0.9',
-            'version' => '9.0.9.0',
-            'reference' => 'c0c2c965b8d51b2530a2892768981315cd61833c',
+            'pretty_version' => '9.0.10',
+            'version' => '9.0.10.0',
+            'reference' => 'f828b8b5e2058551c90d5506e4008dc249538efa',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
